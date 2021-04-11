@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Hello World</title>
+  <title>Plasma - Echelle de l'univers</title>
 </head>
   <script src="pixi/pixi.min.js"></script>
   <style>
-      body{margin: 0;}
+      *{padding:0;margin: 0;}
   </style>
 <body>
   <script type="text/javascript">
@@ -15,7 +15,11 @@
       type = "canvas"
     }
     //L'app prend une hauteur largeur défini mais est redéfini plus loin 
-    let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1});
+    let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
+    Sprite = PIXI.Sprite,
+    loader = PIXI.loader,
+    graphics  = PIXI.Graphics,
+    resources = PIXI.Loader.resources;
 
     //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
     app.renderer.autoResize = true;
@@ -23,12 +27,106 @@
     app.renderer.view.style.display = "block";
     app.renderer.autoResize = true;
     app.renderer.resize(window.innerWidth, window.innerHeight);
+    app.renderer.backgroundColor = 0xF9F2FB;
    
     
     //Le canvas est ajouté dans l'app directement et on peut voir l'app
     document.body.appendChild(app.view);
 
-    PIXI.utils.sayHello(type)
+    //Code pour faire la droite et pour observer le déplacement de l'objet par rapport à la droite.
+    const R = 0xFF0000;
+    let line = new graphics();
+    line.lineStyle(4,R,1);
+    let xy1 = line.moveTo(0,0);
+    let xy0 = line.lineTo(app.view.width, app.view.height);
+    app.stage.addChild(line);
+
+    /*//Rectangle pour le texte de description de l'objet on en crée un avec une bordure noir
+    let r = new graphics();
+    r.lineStyle(4, 0x000000, 1);
+    r.beginFill(0xFFFFFF);
+    r.drawRoundedRect(0, 0, 200, 200, 10)
+
+    //Valeur pour positionner le rectangle
+    r.x = app.view.width/2+100;
+    r.y = app.view.height/2-20;
+
+    //Valeur pour mettre le rectagle au centre
+    //r.x = app.view.width/2-roundBox.width/2;
+    //r.y = app.view.height/2-roundBox.height/2;
+    
+    //On l'ajoute a l'app
+    app.stage.addChild(r);*/
+
+    //On charge un sprite de mars et on le positionne au milieu de l'écran.
+    let player = new Sprite.from("assets/cristal.png");
+    player.anchor.set(0.5);
+    player.x = app.view.width/2;
+    player.y = app.view.height/2;
+    player.width = 150;
+    player.height = 150;
+    player.buttonMode = true;
+    player.interactive = true;
+    app.stage.addChild(player);
+
+    let style = new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 18,
+        fill: "black",
+      });
+      let message = new PIXI.Text("Molécule de cristal", style);
+      message.position.set(app.view.width/2-60, app.view.height/2+30);
+      app.stage.addChild(message);
+
+
+    //Lorsque que l'on utilise la molette la l'objet se déplace 
+    document.body.onwheel = function(){scrollZoom(event)};
+    player.on('mousedown',function(e){
+        let r = new graphics();
+        r.lineStyle(4, 0x000000, 1);
+        r.beginFill(0xFFFFFF);
+        r.drawRoundedRect(0, 0, 200, 200, 10)
+
+        r.x = app.view.width/2+100;
+        r.y = app.view.height/2-20;
+        app.stage.addChild(r);
+        player.on('mouseleave',function(e){
+            app.stage.removeChild(r);
+        });
+    });
+
+    //Fonction pour zoomer sur l'objet
+    function scrollZoom(event){
+        if(event.deltaY > 0){
+            for(let i = 0;i < 500;i++){
+                player.width -= 0.1; 
+                player.height -= 0.1;
+                
+                player.x += 0.05;
+                player.y += 0.05;
+                //player.x = xy0.x + player.x *(xy1.x-xy0.x);
+                //player.y = xy0.y + player.y *(xy1.y-xy0.y);
+            }
+        }
+        else{
+            for(let i = 0;i < 500;i++){
+                player.width += 0.1; 
+                player.height += 0.1;
+                
+                player.x -= 0.05;
+                player.y -= 0.05;
+                //player.x = xy0.x + player.x *(xy1.x-xy0.x);
+                //player.y = xy0.y + player.y *(xy1.y-xy0.y);
+            }
+        }
+    }
+
+
+
+    //L'échelle est censé aller de 1,27*10^7 mèters à 1*10^(-9) mètres De la planète terre 12,700 Kilomètres à Nanomètre
+
+    //pour tester si pixi marche sur le navigateur
+    //PIXI.utils.sayHello(type)
   </script>
 </body>
 </html>
