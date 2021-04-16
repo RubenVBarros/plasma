@@ -19,6 +19,8 @@
     Sprite = PIXI.Sprite,
     loader = PIXI.loader,
     graphics  = PIXI.Graphics,
+    txtp = PIXI.Text,
+    txts = PIXI.TextStyle,
     resources = PIXI.Loader.resources;
 
     //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
@@ -29,99 +31,253 @@
     app.renderer.resize(window.innerWidth, window.innerHeight);
     app.renderer.backgroundColor = 0xF9F2FB;
    
-    
     //Le canvas est ajouté dans l'app directement et on peut voir l'app
     document.body.appendChild(app.view);
 
-    //Code pour faire la droite et pour observer le déplacement de l'objet par rapport à la droite.
-    const R = 0xFF0000;
-    let line = new graphics();
-    line.lineStyle(4,R,1);
-    let xy1 = line.moveTo(0,0);
-    let xy0 = line.lineTo(app.view.width, app.view.height);
-    app.stage.addChild(line);
-
-    /*//Rectangle pour le texte de description de l'objet on en crée un avec une bordure noir
-    let r = new graphics();
-    r.lineStyle(4, 0x000000, 1);
-    r.beginFill(0xFFFFFF);
-    r.drawRoundedRect(0, 0, 200, 200, 10)
-
-    //Valeur pour positionner le rectangle
-    r.x = app.view.width/2+100;
-    r.y = app.view.height/2-20;
-
+    /*
     //Valeur pour mettre le rectagle au centre
     //r.x = app.view.width/2-roundBox.width/2;
     //r.y = app.view.height/2-roundBox.height/2;
+    */
     
-    //On l'ajoute a l'app
-    app.stage.addChild(r);*/
+    //on fait un container pour grouper tout les objets dedans et bouger tout les obj d'un coup.
+    let cont = new PIXI.Container();
+    let con = new PIXI.Container();
+    let co = new PIXI.Container();
+    let c = new PIXI.Container();
+    let a = new PIXI.Container();
+    let ab = new PIXI.Container();
+    let abc = new PIXI.Container();
+    let abcd = new PIXI.Container();
 
     //On charge un sprite de mars et on le positionne au milieu de l'écran.
     let player = new Sprite.from("assets/cristal.png");
-    player.anchor.set(0.5);
-    player.x = app.view.width/2;
-    player.y = app.view.height/2;
-    player.width = 150;
-    player.height = 150;
-    player.buttonMode = true;
-    player.interactive = true;
-    app.stage.addChild(player);
+        player.anchor.set(0.5);
+        player.x = app.view.width/2;
+        player.y = app.view.height/2;
+        player.width = 150;
+        player.height = 150;
+        player.buttonMode = true;
+        player.interactive = true;
 
+    let playe = new Sprite.from("assets/mars.png");
+    playe.anchor.set(0.5);
+    playe.x = app.view.width/2;
+    playe.y = 100;
+    playe.width = 150;
+    playe.height = 150;
+    playe.buttonMode = true;
+    playe.interactive = true;
+    con.addChild(playe);
+
+    let play = new Sprite.from("assets/terre.png");
+    play.anchor.set(0.5);
+    play.x = 100;
+    play.y = app.view.height/2;
+    play.width = 150;
+    play.height = 150;
+    play.buttonMode = true;
+    play.interactive = true;
+    co.addChild(play);
+
+    let pla = new Sprite.from("assets/poisson.png");
+    pla.anchor.set(0.5);
+    pla.x = 2000;
+    pla.y = app.view.height/2;
+    pla.width = 150;
+    pla.height = 150;
+    pla.buttonMode = true;
+    pla.interactive = true;
+    c.addChild(pla);
+    let l = new Sprite.from("assets/main.png");
+    l.anchor.set(0.5);
+    l.x = 1000;
+    l.y = 800;
+    l.scale.set(0.04);
+    l.buttonMode = true;
+    l.interactive = true;
+    a.addChild(l);
+    let pl = new Sprite.from("assets/metre.png");
+    pl.anchor.set(0.5);
+    pl.x = 1600;
+    pl.y = 180;
+    pl.scale.set(0.3);
+    pl.buttonMode = true;
+    pl.interactive = true;
+    ab.addChild(pl);
+    let p = new Sprite.from("assets/globule-rouge.png");
+    p.anchor.set(0.5);
+    p.x = 400;
+    p.y = 180;
+    p.scale.set(0.1) ;
+    p.buttonMode = true;
+    p.interactive = true;
+    abc.addChild(p);
+    /*
+    let r = new graphics();
+        r.lineStyle(4, 0x000000, 1);
+        r.beginFill(0xFFFFFF);
+        r.drawRoundedRect(0, 0, 200, 200, 10);
+
+        r.x = player.x+100;
+        r.y = player.y-70;
+        r.width = player.width;
+        r.height = player.height;*/
+    
+    //Style pour le message
     let style = new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: 18,
         fill: "black",
       });
       let message = new PIXI.Text("Molécule de cristal", style);
-      message.position.set(app.view.width/2-60, app.view.height/2+30);
-      app.stage.addChild(message);
+      message.position.set(player.x-60, player.y+40);
+      let messageg = new PIXI.Text("Globule rouge", style);
+      messageg.position.set(p.x-60, p.y+40);
+
+      cont.addChild(player,message);
+      abc.addChild(messageg)
+
+      //cont.addChild(r);
+      app.stage.addChild(cont);
+      app.stage.addChild(con);
+      app.stage.addChild(co);
+      app.stage.addChild(c);
+      app.stage.addChild(a);
+      app.stage.addChild(ab);
+      app.stage.addChild(abc);
 
 
     //Lorsque que l'on utilise la molette la l'objet se déplace 
     document.body.onwheel = function(){scrollZoom(event)};
-    player.on('mousedown',function(e){
+    p.on('mousedown',function(e){
         let r = new graphics();
         r.lineStyle(4, 0x000000, 1);
         r.beginFill(0xFFFFFF);
-        r.drawRoundedRect(0, 0, 200, 200, 10)
-
-        r.x = app.view.width/2+100;
-        r.y = app.view.height/2-20;
-        app.stage.addChild(r);
-        player.on('mouseleave',function(e){
-            app.stage.removeChild(r);
+        r.drawRoundedRect(0, 0, 200, 200, 10);
+        r.x = p.x+100;
+        r.y = p.y-70;
+        r.width = r.width;
+        r.height = r.height;
+        let txt = new txtp("Fermer",style);
+        txt.position.set(r.x+130,r.y+10);
+        abc.addChild(r,txt);
+        p.on('mouseout',function(event){
+            r.visible = false;
+            txt.visible = false;
         });
     });
+
+    //fonction pour afficher la description lors du clic sur l'objet
+    /*
+    cont.on('mousedown',function(e){
+        let r = new graphics();
+        r.lineStyle(4, 0x000000, 1);
+        r.beginFill(0xFFFFFF);
+        r.drawRoundedRect(0, 0, 200, 200, 10);
+        r.x = player.x+100;
+        r.y = player.y-70;
+        r.width = player.width;
+        r.height = player.height;
+        cont.addChild(r);
+        cont.on('mouseleave',function(e){
+            r.visible = false;
+        });
+    });*/
 
     //Fonction pour zoomer sur l'objet
     function scrollZoom(event){
         if(event.deltaY > 0){
             for(let i = 0;i < 500;i++){
-                player.width -= 0.1; 
-                player.height -= 0.1;
-                
-                player.x += 0.05;
-                player.y += 0.05;
-                //player.x = xy0.x + player.x *(xy1.x-xy0.x);
-                //player.y = xy0.y + player.y *(xy1.y-xy0.y);
+                cont.width -= 0.1; 
+                cont.height -= 0.1;
+
+                cont.x += 0.05;
+                cont.y += 0.05;
+
+                con.width -= 0.1; 
+                con.height -= 0.1;
+
+                con.x += 0.05;
+                con.y += 0.05;
+
+                co.width -= 0.1; 
+                co.height -= 0.1;
+
+                co.x += 0.05;
+                co.y += 0.05;
+
+                c.width -= 0.1; 
+                c.height -= 0.1;
+
+                c.x += 0.05;
+                c.y += 0.05;
+
+                a.width -= 0.1; 
+                a.height -= 0.1;
+
+                a.x += 0.05;
+                a.y += 0.05;
+
+                ab.width -= 0.1; 
+                ab.height -= 0.1;
+
+                ab.x += 0.05;
+                ab.y += 0.05;
+
+                abc.width -= 0.1; 
+                abc.height -= 0.1;
+
+                abc.x += 0.05;
+                abc.y += 0.05;
             }
         }
         else{
             for(let i = 0;i < 500;i++){
-                player.width += 0.1; 
-                player.height += 0.1;
+                cont.width += 0.1; 
+                cont.height += 0.1;
                 
-                player.x -= 0.05;
-                player.y -= 0.05;
-                //player.x = xy0.x + player.x *(xy1.x-xy0.x);
-                //player.y = xy0.y + player.y *(xy1.y-xy0.y);
+                cont.x -= 0.05;
+                cont.y -= 0.05;
+
+                con.width += 0.1; 
+                con.height += 0.1;
+
+                con.x -= 0.05;
+                con.y -= 0.05;
+
+                co.width += 0.1; 
+                co.height += 0.1;
+
+                co.x -= 0.05;
+                co.y -= 0.05;
+
+                c.width += 0.1; 
+                c.height += 0.1;
+
+                c.x -= 0.05;
+                c.y -= 0.05;
+
+                a.width += 0.1; 
+                a.height += 0.1;
+
+                a.x -= 0.05;
+                a.y -= 0.05;
+
+                ab.width += 0.1; 
+                ab.height += 0.1;
+
+                ab.x -= 0.05;
+                ab.y -= 0.05;
+
+                abc.width += 0.1; 
+                abc.height += 0.1;
+
+                abc.x -= 0.05;
+                abc.y -= 0.05;
             }
         }
     }
-
-
 
     //L'échelle est censé aller de 1,27*10^7 mèters à 1*10^(-9) mètres De la planète terre 12,700 Kilomètres à Nanomètre
 
