@@ -3,18 +3,23 @@
 <head>
   <meta charset="utf-8">
   <title>Plasma - Echelle de l'univers</title>
+  <link type="text/css" rel="stylesheet" href="menu.css">
 </head>
   <script src="pixi/pixi.min.js"></script>
   <style>
       *{padding:0;margin: 0;}
   </style>
 <body>
+    <div class="slidecontainer">
+        <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
+    </div>
   <script type="text/javascript">
+    //Si le navigateur ne prend pas en charge WebGL il utilise alors un Canvas à la place du renderer
     let type = "WebGL"
     if(!PIXI.utils.isWebGLSupported()){
       type = "canvas"
     }
-    //L'app prend une hauteur largeur défini mais est redéfini plus loin 
+    //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
     let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
     Sprite = PIXI.Sprite,
     loader = PIXI.loader,
@@ -27,207 +32,118 @@
     app.renderer.autoResize = true;
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
-    app.renderer.autoResize = true;
     app.renderer.resize(window.innerWidth, window.innerHeight);
     app.renderer.backgroundColor = 0xF9F2FB;
    
-    //Le canvas est ajouté dans l'app directement et on peut voir l'app
+    //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
 
-    /*
-    //Valeur pour mettre le rectagle au centre
-    //r.x = app.view.width/2-roundBox.width/2;
-    //r.y = app.view.height/2-roundBox.height/2;
-    */
-    
-    //on fait un container pour grouper tout les objets dedans et bouger tout les obj d'un coup.
+    //on fait un container par objet
     let cont = new PIXI.Container();
     let con = new PIXI.Container();
-    let co = new PIXI.Container();
-    let c = new PIXI.Container();
-    let a = new PIXI.Container();
-    let ab = new PIXI.Container();
     let abc = new PIXI.Container();
-    let abcd = new PIXI.Container();
 
-    //On charge un sprite de mars et on le positionne au milieu de l'écran.
+    //On charge un sprite de l'atome de cristal et on le positionne au milieu de l'écran.
     let player = new Sprite.from("assets/cristal.png");
-        player.anchor.set(0.5);
-        player.x = app.view.width/2;
-        player.y = app.view.height/2;
-        player.width = 150;
-        player.height = 150;
-        player.buttonMode = true;
-        player.interactive = true;
-
-    let playe = new Sprite.from("assets/mars.png");
-    playe.anchor.set(0.5);
-    playe.x = app.view.width/2;
-    playe.y = 100;
-    playe.width = 150;
-    playe.height = 150;
-    playe.buttonMode = true;
-    playe.interactive = true;
-    con.addChild(playe);
-
-    let play = new Sprite.from("assets/terre.png");
-    play.anchor.set(0.5);
-    play.x = 100;
-    play.y = app.view.height/2;
-    play.width = 150;
-    play.height = 150;
-    play.buttonMode = true;
-    play.interactive = true;
-    co.addChild(play);
-
-    let pla = new Sprite.from("assets/poisson.png");
-    pla.anchor.set(0.5);
-    pla.x = 2000;
-    pla.y = app.view.height/2;
-    pla.width = 150;
-    pla.height = 150;
-    pla.buttonMode = true;
-    pla.interactive = true;
-    c.addChild(pla);
-    let l = new Sprite.from("assets/main.png");
-    l.anchor.set(0.5);
-    l.x = 1000;
-    l.y = 800;
-    l.scale.set(0.04);
-    l.buttonMode = true;
-    l.interactive = true;
-    a.addChild(l);
-    let pl = new Sprite.from("assets/metre.png");
-    pl.anchor.set(0.5);
-    pl.x = 1600;
-    pl.y = 180;
-    pl.scale.set(0.3);
-    pl.buttonMode = true;
-    pl.interactive = true;
-    ab.addChild(pl);
-    let p = new Sprite.from("assets/globule-rouge.png");
-    p.anchor.set(0.5);
-    p.x = 400;
-    p.y = 180;
-    p.scale.set(0.1) ;
-    p.buttonMode = true;
-    p.interactive = true;
-    abc.addChild(p);
-    /*
-    let r = new graphics();
-        r.lineStyle(4, 0x000000, 1);
-        r.beginFill(0xFFFFFF);
-        r.drawRoundedRect(0, 0, 200, 200, 10);
-
-        r.x = player.x+100;
-        r.y = player.y-70;
-        r.width = player.width;
-        r.height = player.height;*/
+    //player.anchor.set(0.5);
+    player.x = app.view.width/2;
+    player.y = app.view.height/2;
+    //player.width = 150;
+    //player.height = 150;
+    player.buttonMode = true;
+    player.interactive = true;
     
     //Style pour le message
-    let style = new PIXI.TextStyle({
+    let style = new txts({
         fontFamily: "Arial",
-        fontSize: 18,
+        fontSize: 30,
         fill: "black",
       });
       let message = new PIXI.Text("Molécule de cristal", style);
-      message.position.set(player.x-60, player.y+40);
-      let messageg = new PIXI.Text("Globule rouge", style);
-      messageg.position.set(p.x-60, p.y+40);
+      message.position.set(player.x+1360, player.y+1240);
 
+      //Ajout des objets ds les containers
       cont.addChild(player,message);
-      abc.addChild(messageg)
 
-      //cont.addChild(r);
-      app.stage.addChild(cont);
-      app.stage.addChild(con);
-      app.stage.addChild(co);
-      app.stage.addChild(c);
-      app.stage.addChild(a);
-      app.stage.addChild(ab);
-      app.stage.addChild(abc);
+      //Ajout des containers
+      app.stage.addChild(cont,con,abc);
 
+      //Ajout du slider 
+      let slider = document.getElementById("ma-range");
+      console.log(slider.value);
 
-    //Lorsque que l'on utilise la molette la l'objet se déplace 
-    document.body.onwheel = function(){scrollZoom(event)};
-    p.on('mousedown',function(e){
+      //Variable générale qui donne l'effet de zoom
+      let tailleRef = 3779;
+      let rayon = 1500;
+      let centreX = 100;
+
+      //Initialisation du message de la puissance comme du texte 
+      let powmess = new PIXI.Text();
+
+      //Variable utilisé pour les calculs qui permettent l'effet de zoom des images
+      let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
+      let tailleReelleB = 1;
+      let angleB = Math.PI/8;
+
+      //Variable pour le call Ajax
+      let ajax = new XMLHttpRequest();
+      let method = "GET";
+      let url = "localhost";
+      let asynchronous = true;
+
+      //Ouverture et envoie de la requete ajax pour recevoir les donnes sql
+      ajax.open(method,url,asynchronous);
+      //ajax.send();
+
+      //Si les données sont accesible print dans la console
+      ajax.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+              let data = JSON.parse(this.responseText);
+              console.log(data);//Debug
+          }
+      }
+
+    //Lorsque que l'on clique sur l'objet un rectangle apparait et l'on peut voir la description
+    player.on('mousedown',function(e){
+        /*
+        //Valeur pour mettre le rectagle au centre
+        //r.x = app.view.width/2-roundBox.width/2;
+        //r.y = app.view.height/2-roundBox.height/2;
+        */
         let r = new graphics();
         r.lineStyle(4, 0x000000, 1);
         r.beginFill(0xFFFFFF);
         r.drawRoundedRect(0, 0, 200, 200, 10);
-        r.x = p.x+100;
-        r.y = p.y-70;
-        r.width = r.width;
-        r.height = r.height;
-        let txt = new txtp("Fermer",style);
-        txt.position.set(r.x+130,r.y+10);
-        abc.addChild(r,txt);
-        p.on('mouseout',function(event){
+        r.x = player.x+2600;
+        r.y = player.y+570;
+        r.width = 2500;
+        r.height = 2500;
+        cont.addChild(r);
+        player.on('mouseout',function(event){
             r.visible = false;
-            txt.visible = false;
         });
     });
+    //On console log la valeur quand on arrete de cliquer sur le slider
+    slider.addEventListener('click',function(e){
+            console.log(slider.value);
+    });
 
-    //fonction pour afficher la description lors du clic sur l'objet
-    /*
-    cont.on('mousedown',function(e){
-        let r = new graphics();
-        r.lineStyle(4, 0x000000, 1);
-        r.beginFill(0xFFFFFF);
-        r.drawRoundedRect(0, 0, 200, 200, 10);
-        r.x = player.x+100;
-        r.y = player.y-70;
-        r.width = player.width;
-        r.height = player.height;
-        cont.addChild(r);
-        cont.on('mouseleave',function(e){
-            r.visible = false;
-        });
-    });*/
-
-    //Fonction pour zoomer sur l'objet
+    /*On affecte la fonction de zoom à l'action de scroll dans la page
+    document.body.onwheel = function(){scrollZoom(event)};
+    //Fonction de scroll sur l'objet pour obtenir l'effet zoom
     function scrollZoom(event){
         if(event.deltaY > 0){
             for(let i = 0;i < 500;i++){
                 cont.width -= 0.1; 
                 cont.height -= 0.1;
-
                 cont.x += 0.05;
                 cont.y += 0.05;
-
                 con.width -= 0.1; 
                 con.height -= 0.1;
-
                 con.x += 0.05;
                 con.y += 0.05;
-
-                co.width -= 0.1; 
-                co.height -= 0.1;
-
-                co.x += 0.05;
-                co.y += 0.05;
-
-                c.width -= 0.1; 
-                c.height -= 0.1;
-
-                c.x += 0.05;
-                c.y += 0.05;
-
-                a.width -= 0.1; 
-                a.height -= 0.1;
-
-                a.x += 0.05;
-                a.y += 0.05;
-
-                ab.width -= 0.1; 
-                ab.height -= 0.1;
-
-                ab.x += 0.05;
-                ab.y += 0.05;
-
                 abc.width -= 0.1; 
                 abc.height -= 0.1;
-
                 abc.x += 0.05;
                 abc.y += 0.05;
             }
@@ -236,53 +152,74 @@
             for(let i = 0;i < 500;i++){
                 cont.width += 0.1; 
                 cont.height += 0.1;
-                
                 cont.x -= 0.05;
                 cont.y -= 0.05;
-
                 con.width += 0.1; 
                 con.height += 0.1;
-
                 con.x -= 0.05;
                 con.y -= 0.05;
-
-                co.width += 0.1; 
-                co.height += 0.1;
-
-                co.x -= 0.05;
-                co.y -= 0.05;
-
-                c.width += 0.1; 
-                c.height += 0.1;
-
-                c.x -= 0.05;
-                c.y -= 0.05;
-
-                a.width += 0.1; 
-                a.height += 0.1;
-
-                a.x -= 0.05;
-                a.y -= 0.05;
-
-                ab.width += 0.1; 
-                ab.height += 0.1;
-
-                ab.x -= 0.05;
-                ab.y -= 0.05;
-
                 abc.width += 0.1; 
                 abc.height += 0.1;
-
                 abc.x -= 0.05;
                 abc.y -= 0.05;
             }
         }
+    }*/
+
+    //On initialise l'état d'animation
+    //Le state est alors un composant qui permet de faire tourner à 60 FPS l'animation
+    state = draw;
+    
+    //On ajout la fonction pour la boucle et on l'a commence
+    app.ticker.add(delta => loop(delta));
+    app.ticker.start();
+
+    //Boucle d'animation
+    function loop(delta){
+        state(delta)
     }
 
-    //L'échelle est censé aller de 1,27*10^7 mèters à 1*10^(-9) mètres De la planète terre 12,700 Kilomètres à Nanomètre
+    //La fonction play permet alors de faire 
+    function draw(delta){
+        //Variable pour colorier l'écran à chaque frame
+        
 
-    //pour tester si pixi marche sur le navigateur
-    //PIXI.utils.sayHello(type)
+        //Variable qui récupère la valuer du slider qui permettra de faire les calculs
+        let curseur = Math.pow(10,slider.value);
+
+        //Varible qui permet de faire les calculs pour la position
+        let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
+        ratio = tailleReelleB / curseur;
+            if (ratio < 10) 
+            { 
+                ratioTaille = tailleRef/(Math.max(cont.width, cont.height));	
+                largeur = cont.width * ratio * ratioTaille;
+                hauteur = cont.height * ratio * ratioTaille;
+                positionX = (centreX) + (ratio*rayon*Math.cos(angleB));
+                positionY = (app.view.height/2) + (ratio*rayon*Math.sin(angleB));
+            cont.x = centreX;
+            cont.y = positionY - hauteur/2;
+            cont.width = largeur;
+            cont.height = hauteur;
+            }
+            //Ajout du texte qui indique la puissance en cours sur le slider
+            powmess = new txtp("10^"+slider.value);
+            powmess.position.set(0, 0);
+            app.stage.addChild(powmess);
+    }
+
+    //Class pour les images
+    class Pictures {
+        container;
+        images;
+        constructor(container,images){
+            this.container = container;
+            this.images = images;
+        }
+        write(){
+            console.log("Salut :")
+        }
+    }
   </script>
 </body>
 </html>
