@@ -19,6 +19,35 @@
     if(!PIXI.utils.isWebGLSupported()){
       type = "canvas"
     }
+    class Pictures{
+        constructor(container,images,tailleReelle,angle,message){
+            this.container = container;
+            this.images = images;
+            this.tailleReelle = tailleReelle;
+            this.angle = angle;
+            this.message = message;
+        }
+        placement(){
+            //Variable qui récupère la valuer du slider qui permettra de faire les calculs
+            let curseur = Math.pow(10,slider.value);
+
+            //Varible qui permet de faire les calculs pour la position et pour le calcul du ratio
+            let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
+            ratio = this.tailleReelle / curseur;
+            if (ratio < 10) 
+            { 
+                ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
+                largeur = this.container.width * ratio * ratioTaille;
+                hauteur = this.container.height * ratio * ratioTaille;
+                positionX = (centreX) + (ratio*rayon*Math.cos(this.angle));
+                positionY = (app.view.height/2) + (ratio*rayon*Math.sin(this.angle));
+                this.container.x = centreX;
+                this.container.y = positionY - hauteur/2;
+                this.container.width = largeur;
+                this.container.height = hauteur;
+            }
+        }
+    }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
     let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
     Sprite = PIXI.Sprite,
@@ -27,6 +56,13 @@
     txtp = PIXI.Text,
     txts = PIXI.TextStyle,
     resources = PIXI.Loader.resources;
+
+    //Style pour le message
+    let style = new txts({
+        fontFamily: "Arial",
+        fontSize: 30,
+        fill: "black",
+      });
 
     //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
     app.renderer.autoResize = true;
@@ -39,34 +75,36 @@
     document.body.appendChild(app.view);
 
     //on fait un container par objet
-    let cont = new PIXI.Container();
-    let con = new PIXI.Container();
+    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1,Math.PI/8,new txtp("Molécule de cristal",style));
+    //let cont = new PIXI.Container();
+    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/6,new txtp("Bus",style));
     let abc = new PIXI.Container();
 
+    //Initialisation du tableau d'objets et ajout des objets
+    let tab = [];
+    tab.push(cont,con);
+
     //On charge un sprite de l'atome de cristal et on le positionne au milieu de l'écran.
-    let player = new Sprite.from("assets/cristal.png");
-    //player.anchor.set(0.5);
-    player.x = app.view.width/2;
-    player.y = app.view.height/2;
-    //player.width = 150;
-    //player.height = 150;
-    player.buttonMode = true;
-    player.interactive = true;
-    
-    //Style pour le message
-    let style = new txts({
-        fontFamily: "Arial",
-        fontSize: 30,
-        fill: "black",
-      });
-      let message = new PIXI.Text("Molécule de cristal", style);
-      message.position.set(player.x+1360, player.y+1240);
+    //let player = new Sprite.from("assets/cristal.png");
+    cont.images.x = app.view.width/2;
+    cont.images.y = app.view.height/2;
+    cont.images.buttonMode = true;
+    cont.images.interactive = true;
+    con.images.x = app.view.width/2;
+    con.images.y = app.view.height/2;
+    con.images.buttonMode = true;
+    con.images.interactive = true;
 
-      //Ajout des objets ds les containers
-      cont.addChild(player,message);
+      //Position du nom de l'objet
+      cont.message.position.set(cont.images.x+1360, cont.images.y+1240);
+      con.message.position.set(con.images.x+1360, con.images.y+1240);
 
-      //Ajout des containers
-      app.stage.addChild(cont,con,abc);
+      //Ajout de images et du message ds les containers d'un objet Pictures
+      cont.container.addChild(cont.images,cont.message);
+      con.container.addChild(con.images,con.message);
+
+      //Ajout des containers des objets Pictures
+      app.stage.addChild(cont.container,con.container,abc);
 
       //Ajout du slider 
       let slider = document.getElementById("ma-range");
@@ -80,49 +118,25 @@
       //Initialisation du message de la puissance comme du texte 
       let powmess = new PIXI.Text();
 
-      //Variable utilisé pour les calculs qui permettent l'effet de zoom des images
-      let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
-      let tailleReelleB = 1;
-      let angleB = Math.PI/8;
-
-      //Variable pour le call Ajax
-      let ajax = new XMLHttpRequest();
-      let method = "GET";
-      let url = "localhost";
-      let asynchronous = true;
-
-      //Ouverture et envoie de la requete ajax pour recevoir les donnes sql
-      ajax.open(method,url,asynchronous);
-      //ajax.send();
-
-      //Si les données sont accesible print dans la console
-      ajax.onreadystatechange = function(){
-          if(this.readyState == 4 && this.status == 200){
-              let data = JSON.parse(this.responseText);
-              console.log(data);//Debug
-          }
-      }
-
     //Lorsque que l'on clique sur l'objet un rectangle apparait et l'on peut voir la description
-    player.on('mousedown',function(e){
-        /*
-        //Valeur pour mettre le rectagle au centre
-        //r.x = app.view.width/2-roundBox.width/2;
-        //r.y = app.view.height/2-roundBox.height/2;
-        */
+    cont.images.on('mousedown',function(e){
+        alert("Un atome de cristal est très petit de l'ordre de 10^9 à 10^10");
         let r = new graphics();
         r.lineStyle(4, 0x000000, 1);
         r.beginFill(0xFFFFFF);
         r.drawRoundedRect(0, 0, 200, 200, 10);
-        r.x = player.x+2600;
-        r.y = player.y+570;
+        r.x = cont.images.x+2600;
+        r.y = cont.images.y+570;
         r.width = 2500;
         r.height = 2500;
-        cont.addChild(r);
-        player.on('mouseout',function(event){
+        cont.container.addChild(r);
+        cont.images.on('mouseout',function(event){
             r.visible = false;
         });
     });
+    con.images.on('mousedown',function(e){
+        alert('Voici le scientibus, celui dans lequel vous êtes, il fait plus de 12 mètres, pas mal grand le bus hein ?')
+    })
     //On console log la valeur quand on arrete de cliquer sur le slider
     slider.addEventListener('click',function(e){
             console.log(slider.value);
@@ -179,46 +193,26 @@
         state(delta)
     }
 
-    //La fonction play permet alors de faire 
+    //La fonction play permet alors de voir l'animation grâce à la boucle
     function draw(delta){
-        //Variable pour colorier l'écran à chaque frame
-        
+        //Variable pour recolorier l'écran à chaque frame
+        app.renderer.backgroundColor = 0xFFFFFF;
 
-        //Variable qui récupère la valuer du slider qui permettra de faire les calculs
-        let curseur = Math.pow(10,slider.value);
+        //Optimiser avec un boucle sur les objets grace aux tableaux des objets 
+        //On veut chaques nom d'objet par rapport à son [i] 
+        //Ex: Si le tableau comporte 3 objets donc 3 images et 3 containers, alors on boucle sur le tab et on va mettre i < tab.length et aussi on va mettre
+        //Ce que l'on veut c'est à chaque [i] le nom de l'objet.placement();
 
-        //Varible qui permet de faire les calculs pour la position
-        let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
-        ratio = tailleReelleB / curseur;
-            if (ratio < 10) 
-            { 
-                ratioTaille = tailleRef/(Math.max(cont.width, cont.height));	
-                largeur = cont.width * ratio * ratioTaille;
-                hauteur = cont.height * ratio * ratioTaille;
-                positionX = (centreX) + (ratio*rayon*Math.cos(angleB));
-                positionY = (app.view.height/2) + (ratio*rayon*Math.sin(angleB));
-            cont.x = centreX;
-            cont.y = positionY - hauteur/2;
-            cont.width = largeur;
-            cont.height = hauteur;
-            }
-            //Ajout du texte qui indique la puissance en cours sur le slider
-            powmess = new txtp("10^"+slider.value);
-            powmess.position.set(0, 0);
-            app.stage.addChild(powmess);
-    }
-
-    //Class pour les images
-    class Pictures {
-        container;
-        images;
-        constructor(container,images){
-            this.container = container;
-            this.images = images;
+        //Fonction de la classe qui permet de voir l'animation
+        //cont.placement();
+        for(let i = 0;i < tab.length;i++){
+            tab[i].placement();
         }
-        write(){
-            console.log("Salut :")
-        }
+
+        //Ajout du texte qui indique la puissance en cours sur le slider, puis positionnement du slider et ajout la scène de l'application
+        powmess = new txtp("10^"+slider.value);
+        powmess.position.set(0, 0);
+        app.stage.addChild(powmess);
     }
   </script>
 </body>
