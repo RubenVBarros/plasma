@@ -19,6 +19,15 @@
     if(!PIXI.utils.isWebGLSupported()){
       type = "canvas"
     }
+    //Ajout du slider 
+    let slider = document.getElementById("ma-range");
+    console.log(slider.value);
+
+    //Variable générale qui donne l'effet de zoom
+    let tailleRef = 3779;
+    let rayon = 1500;
+    let centreX = 100;
+
     class Pictures{
         constructor(container,images,tailleReelle,angle,message){
             this.container = container;
@@ -28,6 +37,10 @@
             this.message = message;
         }
         placement(){
+            /*Placement des objets au millieux
+            this.images.x = app.view.width;
+            this.images.y = app.view.height;*/
+
             //Variable qui récupère la valuer du slider qui permettra de faire les calculs
             let curseur = Math.pow(10,slider.value);
 
@@ -60,7 +73,7 @@
     //Style pour le message
     let style = new txts({
         fontFamily: "Arial",
-        fontSize: 30,
+        fontSize: 60,
         fill: "black",
       });
 
@@ -74,46 +87,48 @@
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
 
-    //on fait un container par objet
+    //on initialise les classes et on crée un container, une imagen sa tailleréelle, son angle de placement et son titre
+    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),1e-6,Math.PI/8,new txtp("Globule rouge",style));
+    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),1e-3,Math.PI/7,new txtp("Poisson Zèbre",style));
     let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1,Math.PI/8,new txtp("Molécule de cristal",style));
-    //let cont = new PIXI.Container();
     let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/6,new txtp("Bus",style));
-    let abc = new PIXI.Container();
+    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),12742000.0,Math.PI/6,new txtp("Terre",style));
+    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style));
 
     //Initialisation du tableau d'objets et ajout des objets
     let tab = [];
-    tab.push(cont,con);
+    tab.push(ab,a,cont,con,abc,s);
 
     //On charge un sprite de l'atome de cristal et on le positionne au milieu de l'écran.
-    //let player = new Sprite.from("assets/cristal.png");
-    cont.images.x = app.view.width/2;
-    cont.images.y = app.view.height/2;
-    cont.images.buttonMode = true;
-    cont.images.interactive = true;
-    con.images.x = app.view.width/2;
-    con.images.y = app.view.height/2;
-    con.images.buttonMode = true;
-    con.images.interactive = true;
+    for(let i = 0 ; i < tab.length ; i++){
+        tab[i].images.x = app.view.width/2;
+        tab[i].images.y = app.view.height/2;
+        tab[i].images.buttonMode = true;
+        tab[i].images.interactive = true;
+        tab[i].message.position.set(tab[i].images.x, tab[i].images.y);
+        tab[i].container.addChild(tab[i].images,tab[i].message);
+        tab[i].placement();
+        app.stage.addChild(tab[i].container);
+    }
 
       //Position du nom de l'objet
-      cont.message.position.set(cont.images.x+1360, cont.images.y+1240);
-      con.message.position.set(con.images.x+1360, con.images.y+1240);
+      /*cont.message.position.set(cont.images.x, cont.images.y);
+      con.message.position.set(con.images.x, con.images.y);
+      abc.message.position.set(abc.images.x, abc.images.y);
+      ab.message.position.set(ab.images.x, ab.images.y);
+      a.message.position.set(a.images.x, a.images.y);
+      s.message.position.set(s.images.x, s.images.y)*/;
 
       //Ajout de images et du message ds les containers d'un objet Pictures
-      cont.container.addChild(cont.images,cont.message);
+      /*cont.container.addChild(cont.images,cont.message);
       con.container.addChild(con.images,con.message);
+      abc.container.addChild(abc.images,abc.message);
+      ab.container.addChild(ab.images,ab.message);
+      a.container.addChild(a.images,a.message);
+      s.container.addChild(s.images,s.message);*/
 
       //Ajout des containers des objets Pictures
-      app.stage.addChild(cont.container,con.container,abc);
-
-      //Ajout du slider 
-      let slider = document.getElementById("ma-range");
-      console.log(slider.value);
-
-      //Variable générale qui donne l'effet de zoom
-      let tailleRef = 3779;
-      let rayon = 1500;
-      let centreX = 100;
+      //app.stage.addChild(cont.container,con.container,abc.container,ab.container,a.container,s.container);
 
       //Initialisation du message de la puissance comme du texte 
       let powmess = new PIXI.Text();
