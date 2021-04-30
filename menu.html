@@ -98,11 +98,12 @@
     let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style));
     let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),1.4e9,Math.PI/7,new txtp("Le Soleil",style));
     let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),1,Math.PI/8,new txtp("Main",style));
+    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),3e-3,Math.PI/7,new txtp("Larve de poisson",style));
 
 
     //Initialisation du tableau d'objets et ajout des objets
     let tab = [];
-    tab.push(ab,a,cont,con,abc,s,sun,main);
+    tab.push(ab,a,cont,con,abc,s,sun,main,poisson);
 
     /*Boucle qui permet de rendre cliquable les objets et 
     ajout du message et de l'image dans le container de l'objet 
