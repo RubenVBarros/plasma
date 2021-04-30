@@ -75,6 +75,8 @@
         fontFamily: "Arial",
         fontSize: 60,
         fill: "black",
+        align:"center",
+        fontWeight:"bold",
       });
 
     //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
@@ -87,17 +89,20 @@
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
 
-    //on initialise les classes et on crée un container, une imagen sa tailleréelle, son angle de placement et son titre
+    //on initialise les classes et on crée un container, une imagen sa tailleréelle, son angle de sortie de l'écran et son titre
+    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1e-9,Math.PI/8,new txtp("Molécule de cristal",style));
     let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),1e-6,Math.PI/8,new txtp("Globule rouge",style));
     let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),1e-3,Math.PI/7,new txtp("Poisson Zèbre",style));
-    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1,Math.PI/8,new txtp("Molécule de cristal",style));
-    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/6,new txtp("Bus",style));
+    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/4,new txtp("Bus",style));
     let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),12742000.0,Math.PI/6,new txtp("Terre",style));
     let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style));
+    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),1.4e9,Math.PI/7,new txtp("Le Soleil",style));
+    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),1,Math.PI/8,new txtp("Main",style));
+
 
     //Initialisation du tableau d'objets et ajout des objets
     let tab = [];
-    tab.push(ab,a,cont,con,abc,s);
+    tab.push(ab,a,cont,con,abc,s,sun,main);
 
     /*Boucle qui permet de rendre cliquable les objets et 
     ajout du message et de l'image dans le container de l'objet 
@@ -107,7 +112,8 @@
         tab[i].images.y = app.view.height/2;
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
-        tab[i].message.position.set(tab[i].images.x, tab[i].images.y);
+        tab[i].images.anchor.set(0.2);
+        tab[i].message.position.set(tab[i].images.x+100, tab[i].images.y-400);
         tab[i].container.addChild(tab[i].images,tab[i].message);
         app.stage.addChild(tab[i].container);
     }
