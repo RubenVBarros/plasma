@@ -13,7 +13,17 @@
     <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
     </div>
+    <div id = "modal_container" class = "modal-container">
+        <div class="modal">
+            <h2>Description :</h2>
+            <p id = "description"></p>
+        </div>
+    </div>
   <script type="text/javascript">
+    //Variable pour obtenir contenu du paragraphe et pour obtenir le div pour le cacher plus tard
+    let descriptionId = document.getElementById("description");
+    let modal = document.getElementById("modal_container");
+
     //Si le navigateur ne prend pas en charge WebGL il utilise alors un Canvas à la place du renderer
     let type = "WebGL"
     if(!PIXI.utils.isWebGLSupported()){
@@ -30,12 +40,14 @@
 
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message){
+        constructor(container,images,tailleReelle,angle,message,description,box){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
             this.angle = angle;
             this.message = message;
+            this.description = description;
+            this.box = box;
         }
         placement(){
             //Variable qui récupère la valuer du slider qui permettra de faire les calculs
@@ -60,6 +72,27 @@
             }
             else this.container.visible = false;//BC
         }
+        showDescription(pict,desc,box){
+            //let r = new graphics();
+            this.images.on('mousedown',function(e){
+                /*box.lineStyle(4, 0x000000, 1);
+                box.beginFill(0xFFFFFF);
+                box.drawRoundedRect(0, 0, 420, 400, 8);
+                box.endFill();
+                box.x = 1680;
+                box.y = 10;
+                app.stage.addChild(box);
+                box.visible = true;*/
+                modal.style.display = "flex";
+                descriptionId.textContent = desc.text;
+            });
+            //Quand on sort de l'image la description disparait
+            this.images.on('mouseout',function(e){
+                //box.visible = false;
+                modal.style.display= "none";
+                descriptionId.textContent = "";
+            });
+        }
     }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
     let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
@@ -68,6 +101,7 @@
     graphics  = PIXI.Graphics,
     txtp = PIXI.Text,
     txts = PIXI.TextStyle,
+    ls = PIXI.LineStyle,
     resources = PIXI.Loader.resources;
 
     //Style pour le message
@@ -90,23 +124,27 @@
     document.body.appendChild(app.view);
 
     //on initialise les classes et on crée un container, une image, sa tailleréelle, son angle de sortie de l'écran et son titre
-    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1e-9,Math.PI/8,new txtp("Molécule de cristal",style));
-    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),1e-6,Math.PI/8,new txtp("Globule rouge",style));
-    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),3e-3,Math.PI/7,new txtp("Larve de poisson",style));
-    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),1e-3,Math.PI/7,new txtp("Poisson Zèbre",style));
-    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),2e-1,Math.PI/8,new txtp("Main",style));
-    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/4,new txtp("Bus",style));
-    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/notre-dame.png"),128,Math.PI/7,new txtp("Cathédrale Notre-Dame de Paris",style));
-    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/limoges.png"),8.8e3,Math.PI/7,new txtp("Ville de Limoges",style));
-    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/france.png"),2.592402e6,Math.PI/7,new txtp("La France",style));
-    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),12742000.0,Math.PI/6,new txtp("Terre",style));
-    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style));
-    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),1.4e9,Math.PI/7,new txtp("Le Soleil",style));
+    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1e-9,Math.PI/8,new txtp("Molécule de cristal",style),new txtp("Molécule de cristal",style),new graphics());
+    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),1e-6,Math.PI/8,new txtp("Globule rouge",style),new txtp("Molécule de cristal",style),new graphics());
+    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),3e-3,Math.PI/7,new txtp("Larve de poisson",style),new txtp("Molécule de cristal",style),new graphics());
+    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),1e-3,Math.PI/7,new txtp("Poisson Zèbre",style),new txtp("Molécule de cristal",style),new graphics());
+    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),2e-1,Math.PI/8,new txtp("Main",style),new txtp("Une main, nous en avons deux mais une seule fait près de 20 centimètres, rendez-vous compte la taille d'un double décimètre mais on peut faire tellement de choses avec, que feriez vous si vous n'aviez pas de main ?",style),new graphics());
+    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/4,new txtp("Bus",style),new txtp("Molécule de cristal",style),new graphics());
+    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/notre-dame.png"),128,Math.PI/7,new txtp("Cathédrale Notre-Dame de Paris",style),new txtp("Molécule de cristal",style),new graphics());
+    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/limoges.png"),8.8e3,Math.PI/7,new txtp("Ville de Limoges",style),new txtp("Molécule de cristal",style),new graphics());
+    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/france.png"),2.592402e6,Math.PI/7,new txtp("La France",style),new txtp("Molécule de cristal",style),new graphics());
+    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),12742000.0,Math.PI/6,new txtp("Terre",style),new txtp("Molécule de cristal",style),new graphics());
+    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style),new txtp("Molécule de cristal",style),new graphics());
+    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),1.4e9,Math.PI/7,new txtp("Le Soleil",style),new txtp("Molécule de cristal",style),new graphics());
 
 
     //Initialisation du tableau d'objets et ajout des objets
     let tab = [];
     tab.push(ab,a,cont,con,abc,s,sun,main,poisson,fr,lim,nd);
+    for(let i = 0;i < tab.length;i++){
+        console.log("Avant le tri:" + " " + tab[i].tailleReelle);
+        tab[i].description.visible = false;
+    }
 
     //Fonction de tri des images par tailleReelle, les premiers objets dans l'index du tableau sont
     //les plus petits et les derniers sont les plus grands trié par tailleReelle.
@@ -121,14 +159,14 @@
     ajout du message et de l'image dans le container de l'objet 
     et ajout des containers dans la scène principale*/
     for(let i = 0 ; i < tab.length ; i++){
-        console.log(tab[i].tailleReelle);//On met un console log pour voir comment le tri se comporte si il a réussi ou pas.
+        console.log("Après le tri :" + " " + tab[i].tailleReelle);//On met un console log pour voir comment le tri se comporte si il a réussi ou pas.
         tab[i].images.x = app.view.width/2;
         tab[i].images.y = app.view.height/2;
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
         tab[i].message.position.set(tab[i].images.x+100, tab[i].images.y-400);
-        tab[i].container.addChild(tab[i].images,tab[i].message);
+        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box);
         app.stage.addChild(tab[i].container);
     }
 
@@ -139,7 +177,7 @@
     app.stage.addChild(powmess);//BC
 
     //Lorsque que l'on clique sur l'objet un rectangle apparait et l'on peut voir la description
-    cont.images.on('mousedown',function(e){
+    /*cont.images.on('mousedown',function(e){
         alert("Un atome de cristal est très petit de l'ordre de 10^9 à 10^10");
         let r = new graphics();
         r.lineStyle(4, 0x000000, 1);
@@ -153,10 +191,7 @@
         cont.images.on('mouseout',function(event){
             r.visible = false;
         });
-    });
-    con.images.on('mousedown',function(e){
-        alert('Voici le scientibus, celui dans lequel vous êtes, il fait plus de 12 mètres, pas mal grand le bus hein ?')
-    })
+    });*/
     //On console log la valeur quand on arrete de cliquer sur le slider
     slider.addEventListener('click',function(e){
             console.log(slider.value);
@@ -220,6 +255,7 @@
         //Boucle qui permet à chaque objets de voir son placement
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         powmess.text = "10^"+slider.value; //BC

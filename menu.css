@@ -1,35 +1,57 @@
 
-  /* The slider itself */
+  /* Le slider */
   .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
+    -webkit-appearance: none;  /* On écrase les styles css par défaut */
     appearance: none;
-    width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    width: 100%; /* On prend toute la largeur de l'écran */
+    height: 25px; /* Hauteur spécifié */
+    background: #d3d3d3; /* Background de couleur gris */
+    outline: none; /* On enlève l'outline sur le slider */
+    opacity: 0.7; /* On met un peu de transparence (pour les effets de souris quand on est sur le slider) */
+    -webkit-transition: .2s; /* On attends .2 secondes pour la transition quand on passe la souris dessus */
     transition: opacity .2s;
   }
   
-  /* Mouse-over effects */
+  /* Effet lorsque la souris est sur le slider */
   .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
+    opacity: 1; /* Opacité au max sur le slider quand la souris est dessus */
   }
   
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  /* Le handle du slider gère la plupart des browsers et écrase les anciens look avec -> webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) */
   .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
+    -webkit-appearance: none; /* On écrase l'ancien look */
     appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; /* Largeur du slider */
+    height: 25px; /* Hauteut du slider */
+    background: url('earth2.png'); /* Image du Background du slider */
+    cursor: pointer; /* Curseur */
   }
   
   .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+    width: 25px; /* Largeur du slider */
+    height: 25px; /* Hauteut du slider */
+    background: url('earth2.png'); /* Image du background du slider */
+    cursor: pointer; /* Curseur */
+  }
+  /* Style pour box de description de chaque objet*/
+  .modal-container{
+      display: flex;
+      justify-content: center;
+  }
+  .modal {
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      padding: 30px 50px;
+      width: 100%;
+      max-width: 100%;
+      text-align: center;
+  }
+  .modal h1 {
+    margin: 0;
+  }
+  /*Import et mise en page de la police Poppins*/
+  @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
+  body{
+      font-family: 'Poppins',sans-serif;
   }
