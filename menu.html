@@ -6,6 +6,7 @@
   <link type="text/css" rel="stylesheet" href="menu.css">
 </head>
   <script src="pixi/pixi.min.js"></script>
+  <script src="objet2.js"></script>
 <body>
     <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
@@ -162,36 +163,35 @@
         const response = await fetch(url);
         const obj = await response.json();
     }*/
-
-
     /*
+    let xx ="";
+    async function printAddress() {
     const texte = fetch("objet.json")
     .then((response) => response.json())
     .then((obj) => {
         return obj.cristal.texte;
     });
-
-    const printAddress = async () => {
-    const a = await texte;
-    console.log(a);
+    //const a = await texte;
+    xx = texte;
+    return await texte;
+    //console.log(a);
     };
-    printAddress();*/
-
-    //fetch('objet.json').then(res => res.json()).then(data => console.log(typeof data.cristal.texte));
+    printAddress().then(value => console.log(value));
+    console.log(xx);*/
 
     //on initialise les classes et on crée un container, une image, sa tailleréelle, son angle de sortie de l'écran et son titre
-    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),1e-9,Math.PI/8,new txtp("caller",style),new txtp("C'est une molécule de cristal, une molécule c'est très petit et c'est l'assemblage de plusieurs atomes.",style),new graphics());
-    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),1e-6,Math.PI/8,new txtp("Globule rouge",style),new txtp("Les globules rouges permettent de transporter l'oxygène vers les tissus et elles permettent de capter le gaz carbonique au niveau des tissus pour les éliminer par les voies respiratoires.",style),new graphics());
-    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),3e-3,Math.PI/7,new txtp("Larve de poisson",style),new txtp("La larve de poisson est le premier stade de développement pour un poisson, après l'éclosion des oeufs, c'est comme cela que le poisson débute sa vie.",style),new graphics());
-    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),1e-3,Math.PI/7,new txtp("Poisson Zèbre",style),new txtp("Le poisson zèbre est une espèce de poisson très utilisée dans le monde scientifique car il aurait la particularité de régénérer des parties de son corps en cas  de blessure, si on pouvait appliquer cela aux humains ce serait fou !",style),new graphics());
-    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),2e-1,Math.PI/8,new txtp("Main",style),new txtp("Une main, nous en avons deux mais une seule fait près de 20 centimètres, rendez-vous compte la taille d'un double décimètre mais on peut faire tellement de choses avec, que feriez vous si vous n'aviez pas de main ?",style),new graphics());
-    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),12,Math.PI/4,new txtp("Bus",style),new txtp("Ca c'est le ScientiBus, c'est la ou ont lieu les meilleures expériences scientifiques de France.",style),new graphics());
-    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/notre-dame.png"),128,Math.PI/7,new txtp("Cathédrale Notre-Dame de Paris",style),new txtp("La cathédrale Notre-Dame de Paris est un monument emblématique de Paris bien qu'elle ait subit un incendie, son histoire ne s'en trouve pas moins effacé. Elle a accueilli le Sacre de Napoléon en 1804",style),new graphics());
-    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/limoges.png"),8.8e3,Math.PI/7,new txtp("Ville de Limoges",style),new txtp("La ville de limoges avec ses agglomérations autour, c'est la ville ou vous habitez sûrement !",style),new graphics());
-    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/france.png"),2.592402e6,Math.PI/7,new txtp("La France",style),new txtp("C'est la France, pays dans lequel nous vivons, c'est le pays de la baguette et du bon vin.",style),new graphics());
-    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),12742000.0,Math.PI/6,new txtp("Terre",style),new txtp("La Terre, c'est la planète ou nous vivons, le saviez-vous que la Terre est composé à 70% d'eau, elle réunit aussi tout les critères nécessaires pour le développement de la vie.",style),new graphics());
-    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),116460000.0,Math.PI/6,new txtp("Saturne",style),new txtp("Saturne est la seule planète qui possède une couronne d'anneaux et elle possède plus d'une centaine de satellite !",style),new graphics());
-    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),1.4e9,Math.PI/7,new txtp("Le Soleil",style),new txtp("Le Soleil est notre source de lumières et de chaleur, le soleil est tellement massif qu'il représente plus de 99,854% de la masse totale du Système solaire et il émet 20 000 fois plus d'énergie que nous en consommons, c'est totalement dingue !",style),new graphics());
+    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),data[0].tailleReelle,data[0].angle,new txtp(data[0].texte,style),new txtp(data[0].description,style),new graphics());
+    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),data[1].tailleReelle,data[1].angle,new txtp(data[1].texte,style),new txtp(data[1].description,style),new graphics());
+    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),data[2].tailleReelle,data[2].angle,new txtp(data[2].texte,style),new txtp(data[2].description,style),new graphics());
+    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),data[3].tailleReelle,data[3].angle,new txtp(data[3].texte,style),new txtp(data[3].description,style),new graphics());
+    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),data[4].tailleReelle,data[4].angle,new txtp(data[4].texte,style),new txtp(data[4].description,style),new graphics());
+    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),data[5].tailleReelle,data[5].angle,new txtp(data[5].texte,style),new txtp(data[5].description,style),new graphics());
+    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/notre-dame.png"),data[6].tailleReelle,data[6].angle,new txtp(data[6].texte,style),new txtp(data[6].description,style),new graphics());
+    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/limoges.png"),data[7].tailleReelle,data[7].angle,new txtp(data[7].texte,style),new txtp(data[7].description,style),new graphics());
+    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/france.png"),data[8].tailleReelle,data[8].angle,new txtp(data[8].texte,style),new txtp(data[8].description,style),new graphics());
+    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),data[9].tailleReelle,data[9].angle,new txtp(data[9].texte,style),new txtp(data[9].description,style),new graphics());
+    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),data[10].tailleReelle,data[10].angle,new txtp(data[10].texte,style),new txtp(data[10].description,style),new graphics());
+    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),data[11].tailleReelle,data[11].angle,new txtp(data[11].texte,style),new txtp(data[11].description,style),new graphics());
 
 
     //Initialisation du tableau d'objets et ajout des objets
