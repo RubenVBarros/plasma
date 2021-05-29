@@ -155,43 +155,23 @@
    
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
+    
 
-    /*
-    let t = "";
-    const url ='objet.json';
-    async function getJson(){
-        const response = await fetch(url);
-        const obj = await response.json();
-    }*/
-    /*
-    let xx ="";
-    async function printAddress() {
-    const texte = fetch("objet.json")
-    .then((response) => response.json())
-    .then((obj) => {
-        return obj.cristal.texte;
-    });
-    //const a = await texte;
-    xx = texte;
-    return await texte;
-    //console.log(a);
-    };
-    printAddress().then(value => console.log(value));
-    console.log(xx);*/
+    //for(let i = 0;i < data.length;i++){console.log(data[i].path)}
 
     //on initialise les classes et on crée un container, une image, sa tailleréelle, son angle de sortie de l'écran et son titre
-    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/cristal.png"),data[0].tailleReelle,data[0].angle,new txtp(data[0].texte,style),new txtp(data[0].description,style),new graphics());
-    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/globule-rouge.png"),data[1].tailleReelle,data[1].angle,new txtp(data[1].texte,style),new txtp(data[1].description,style),new graphics());
-    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/larve.png"),data[2].tailleReelle,data[2].angle,new txtp(data[2].texte,style),new txtp(data[2].description,style),new graphics());
-    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/poisson.png"),data[3].tailleReelle,data[3].angle,new txtp(data[3].texte,style),new txtp(data[3].description,style),new graphics());
-    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/main.png"),data[4].tailleReelle,data[4].angle,new txtp(data[4].texte,style),new txtp(data[4].description,style),new graphics());
-    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/bus.png"),data[5].tailleReelle,data[5].angle,new txtp(data[5].texte,style),new txtp(data[5].description,style),new graphics());
-    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/notre-dame.png"),data[6].tailleReelle,data[6].angle,new txtp(data[6].texte,style),new txtp(data[6].description,style),new graphics());
-    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/limoges.png"),data[7].tailleReelle,data[7].angle,new txtp(data[7].texte,style),new txtp(data[7].description,style),new graphics());
-    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/france.png"),data[8].tailleReelle,data[8].angle,new txtp(data[8].texte,style),new txtp(data[8].description,style),new graphics());
-    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/earth.png"),data[9].tailleReelle,data[9].angle,new txtp(data[9].texte,style),new txtp(data[9].description,style),new graphics());
-    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/saturn.png"),data[10].tailleReelle,data[10].angle,new txtp(data[10].texte,style),new txtp(data[10].description,style),new graphics());
-    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from("assets/sun.png"),data[11].tailleReelle,data[11].angle,new txtp(data[11].texte,style),new txtp(data[11].description,style),new graphics());
+    let cont = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[0].path),data[0].tailleReelle,data[0].angle,new txtp(data[0].texte,style),new txtp(data[0].description,style),new graphics());
+    let ab = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[1].path),data[1].tailleReelle,data[1].angle,new txtp(data[1].texte,style),new txtp(data[1].description,style),new graphics());
+    let poisson = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[2].path),data[2].tailleReelle,data[2].angle,new txtp(data[2].texte,style),new txtp(data[2].description,style),new graphics());
+    let a = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[3].path),data[3].tailleReelle,data[3].angle,new txtp(data[3].texte,style),new txtp(data[3].description,style),new graphics());
+    let main = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[4].path),data[4].tailleReelle,data[4].angle,new txtp(data[4].texte,style),new txtp(data[4].description,style),new graphics());
+    let con = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[5].path),data[5].tailleReelle,data[5].angle,new txtp(data[5].texte,style),new txtp(data[5].description,style),new graphics());
+    let nd = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[6].path),data[6].tailleReelle,data[6].angle,new txtp(data[6].texte,style),new txtp(data[6].description,style),new graphics());
+    let lim = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[7].path),data[7].tailleReelle,data[7].angle,new txtp(data[7].texte,style),new txtp(data[7].description,style),new graphics());
+    let fr = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[8].path),data[8].tailleReelle,data[8].angle,new txtp(data[8].texte,style),new txtp(data[8].description,style),new graphics());
+    let abc = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[9].path),data[9].tailleReelle,data[9].angle,new txtp(data[9].texte,style),new txtp(data[9].description,style),new graphics());
+    let s = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[10].path),data[10].tailleReelle,data[10].angle,new txtp(data[10].texte,style),new txtp(data[10].description,style),new graphics());
+    let sun = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[11].path),data[11].tailleReelle,data[11].angle,new txtp(data[11].texte,style),new txtp(data[11].description,style),new graphics());
 
 
     //Initialisation du tableau d'objets et ajout des objets
