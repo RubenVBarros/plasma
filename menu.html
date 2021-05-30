@@ -167,7 +167,7 @@
         for(let i = 0 ; i < data.length ; i++){
             tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics());
             tab.push(tabobj[i]);
-            console.log("Element numéro : "+ i + tabobj[i]);
+            console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
         }
         return tabobj;
     }
