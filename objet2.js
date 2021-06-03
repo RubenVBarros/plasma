@@ -82,5 +82,12 @@ let data =[
         "texte":"Soleil",
         "description":"Le Soleil est notre source de lumières et de chaleur, le soleil est tellement massif qu'il représente plus de 99,854% de la masse totale du Système solaire et il émet 20 000 fois plus d'énergie que nous en consommons, c'est totalement dingue !",
         "path":"assets/sun.png"
+    },
+    {
+        "tailleReelle":1000000.0,
+        "angle":Math.PI/7,
+        "texte":"Mars",
+        "description":"La planete rouge !",
+        "path":"assets/mars.png"
     }
 ];

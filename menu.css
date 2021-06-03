@@ -21,16 +21,16 @@
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* On écrase l'ancien look */
     appearance: none;
-    width: 25px; /* Largeur du slider */
-    height: 25px; /* Hauteut du slider */
-    background: url('earth2.png'); /* Image du Background du slider */
+    width: 48px; /* Largeur du slider */
+    height: 48px; /* Hauteut du slider */
+    background: url('planet-48.png'); /* Image du Background du slider */
     cursor: pointer; /* Curseur */
   }
   
   .slider::-moz-range-thumb {
-    width: 25px; /* Largeur du slider */
-    height: 25px; /* Hauteut du slider */
-    background: url('earth2.png'); /* Image du background du slider */
+    width: 48px; /* Largeur du slider */
+    height: 48px; /* Hauteut du slider */
+    background: url('planet-48.png'); /* Image du background du slider */
     cursor: pointer; /* Curseur */
   }
 

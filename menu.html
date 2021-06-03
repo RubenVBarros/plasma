@@ -8,6 +8,7 @@
   <script src="pixi/pixi.min.js"></script>
   <script type='text/javascript' src='//code.jquery.com/jquery-1.10.1.js'></script>
   <script src="objet2.js"></script>
+  <script src="settings.js"></script>
 <body>
     <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
@@ -63,11 +64,6 @@
     //Ajout du slider 
     let slider = document.getElementById("ma-range");
 
-    //Variable générale qui donne l'effet de zoom
-    let tailleRef = 3779;
-    let rayon = 1500;
-    let centreX = 100;
-
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
         constructor(container,images,tailleReelle,angle,message,description,box){
@@ -106,24 +102,26 @@
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
-            //let r = new graphics();
             this.images.on('mousedown',function(e){
-                /*box.lineStyle(4, 0x000000, 1);
+                box.lineStyle(4, 0x000000, 1);
                 box.beginFill(0xFFFFFF);
-                box.drawRoundedRect(0, 0, 420, 400, 8);
+                box.drawRoundedRect(0, 1, 420, 950, 8);
                 box.endFill();
                 box.x = 1680;
-                box.y = 10;
                 app.stage.addChild(box);
-                box.visible = true;*/
-                modal.style.display = "flex";
-                descriptionId.textContent = desc.text;
+                box.visible = true;
+                let a = new txtp("Salut je suis une main je fais 20 cm \net puis voila quoi ");
+                a.position.set(box.x + 5,box.y);
+                app.stage.addChild(a);
+                //modal.style.display = "flex";
+                //descriptionId.textContent = desc.text;
             });
             //Quand on sort de l'image la description disparait
             this.images.on('mouseout',function(e){
-                //box.visible = false;
-                modal.style.display= "none";
-                descriptionId.textContent = "";
+                box.visible = false;
+                //Mettre un truc pour 
+                //modal.style.display= "none";
+                //descriptionId.textContent = "";
             });
         }
     }
@@ -167,17 +165,12 @@
         for(let i = 0 ; i < data.length ; i++){
             tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics());
             tab.push(tabobj[i]);
+            tab[i].description.visible = false;
             console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
         }
         return tabobj;
     }
     createVar();
-
-    //Ajout des classes ajout des objets dans le tableau principal
-    for(let i = 0;i < tab.length;i++){
-        //console.log("Avant le tri:" + " " + tab[i].tailleReelle);
-        tab[i].description.visible = false;
-    }
 
     function showAdd(){
         form.style.display = "inline";
@@ -195,9 +188,6 @@
         let video = document.forms["add-objet"]["uploadv"].value;
         if (fichier == "" || nom == "" || taille == "" || angle == "" || description == "" || chk.checked == true && video == "") {
                 alert("Il vous manque un ou plusieurs champs non remplis");
-                /*if(chk == true && video == ""){
-                    alert("Il vous manque un ou plusieurs champs non remplis");
-                }*/
         }
         else{
             closeAdd();
@@ -216,18 +206,18 @@
 
     //Fonction de tri des images par tailleReelle, les premiers objets dans l'index du tableau sont
     //les plus petits et les derniers sont les plus grands trié par tailleReelle.
-    //Le tri fait la différence entre deux éléments et les réarrage selon l'ordre croissant.
+    //Le tri fait la différence entre deux éléments et les réarrage selon un ordre croissant.
     function tri(){
         for(let i = 0; i < tab.length; i++){
             tab.sort((first,second) => first.tailleReelle - second.tailleReelle);
         }
     }
     tri();
+
     /*Boucle qui permet de rendre cliquable les objets et 
     ajout du message et de l'image dans le container de l'objet 
     et ajout des containers dans la scène principale*/
     for(let i = 0 ; i < tab.length ; i++){
-        //console.log("Après le tri :" + " " + tab[i].tailleReelle);//On met un console log pour voir comment le tri se comporte si il a réussi ou pas.
         tab[i].images.x = app.view.width/2;
         tab[i].images.y = app.view.height/2;
         tab[i].images.buttonMode = true;
@@ -241,7 +231,7 @@
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
     let powmess = new PIXI.Text("10^"+slider.value.sup());//BC
-    powmess.position.set(app.view.width/2-100,0);//BC
+    powmess.position.set(app.view.width/2-120,0);//BC
     app.stage.addChild(powmess);//BC
 
     //Lorsque que l'on clique sur l'objet un rectangle apparait et l'on peut voir la description
