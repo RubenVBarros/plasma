@@ -31,7 +31,7 @@ let data =[
         "tailleReelle":2e-1,
         "angle":Math.PI/8,
         "texte":"Main",
-        "description":"Une main, nous en avons deux mais une seule fait près de 20 centimètres, rendez-vous compte la taille d'un double décimètre mais on peut faire tellement de choses avec, que feriez vous si vous n'aviez pas de main ?",
+        "description":"Une main, nous en avons deux \nmais une seule fait près de 20 \ncentimètres, rendez-vous compte \nla taille d'un double décimètre \nmais on peut faire tellement de \nchoses avec, que feriez vous si \nvous n'aviez pas de main ?",
         "path":"assets/main.png"
     },
     {

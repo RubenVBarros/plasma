@@ -102,6 +102,8 @@
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
+            let description = new txtp(desc._text);
+            description.visible = false;
             this.images.on('mousedown',function(e){
                 box.lineStyle(4, 0x000000, 1);
                 box.beginFill(0xFFFFFF);
@@ -110,16 +112,18 @@
                 box.x = 1680;
                 app.stage.addChild(box);
                 box.visible = true;
-                let a = new txtp("Salut je suis une main je fais 20 cm \net puis voila quoi ");
-                a.position.set(box.x + 5,box.y);
-                app.stage.addChild(a);
+                description.position.set(box.x + 15,box.y);
+                description.visible = true;
+                app.stage.addChild(description);
                 //modal.style.display = "flex";
                 //descriptionId.textContent = desc.text;
             });
             //Quand on sort de l'image la description disparait
             this.images.on('mouseout',function(e){
                 box.visible = false;
-                //Mettre un truc pour 
+                description.visible = false;
+                //Mettre un truc pour faire disparaitre la description
+
                 //modal.style.display= "none";
                 //descriptionId.textContent = "";
             });
