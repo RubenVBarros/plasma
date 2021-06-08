@@ -3,7 +3,7 @@
  //Variable générale qui donne l'effet de zoom
  let tailleRef = 3779;
  let rayon = 1500;
- let centreX = 100;
+ let centreX = 700;
 
  //Image de l'arrière plan de l'application (pas fonctionnel encore)
  let bgImage = "assets/image.png";

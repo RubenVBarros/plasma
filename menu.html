@@ -13,12 +13,6 @@
     <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
     </div>
-    <div id="modal_container" class="modal-container">
-        <div class="modal">
-            <h2>Description :</h2>
-            <p id="description"></p>
-        </div>
-    </div>
     <button type="button" onclick="showAdd()" class="ajout">Ajouter un objet</button>
     <button type="button" onclick="closeAdd()" class="fermer">Fermer la fenêtre</button><br><br>
     <form action="" id="add-objet" onsubmit="checkForm()">
@@ -50,7 +44,6 @@
   <script type="text/javascript">
     //Variable pour obtenir contenu du paragraphe et pour obtenir le div pour le cacher plus tard
     let descriptionId = document.getElementById("description");
-    let modal = document.getElementById("modal_container");
     let form = document.getElementById("add-objet");
     let lbl = document.getElementsByClassName("ajout");
     let lblf = document.getElementsByClassName("fermer");
@@ -66,7 +59,7 @@
 
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message,description,box){
+        constructor(container,images,tailleReelle,angle,message,description,box,orientation){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
@@ -74,8 +67,10 @@
             this.message = message;
             this.description = description;
             this.box = box;
+            this.orientation = orientation;
         }
         placement(){
+
             //Variable qui récupère la valuer du slider qui permettra de faire les calculs
             let curseur = Math.pow(10,slider.value);
 
@@ -96,37 +91,71 @@
                 this.container.height = hauteur;
                 this.container.visible = true;//BC
             }
-            else this.container.visible = false;//BC
+            else {
+                this.container.visible = false;//BC
+            }
         }
-        showDescription(pict,desc,box){
+        showDescription(pict,desc,box,orientation,fermer,titre){
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
             let description = new txtp(desc._text);
             description.visible = false;
+
+            switch (orientation){
+                case "ouest":
+                    titre.x = -1000;
+                    titre.y = 1500;
+                    break;
+                case "est":
+                    titre.x = 1680;
+                    break;
+                case "nord":
+                    titre.y = 100;
+                    break;
+                case "sud":
+                    titre.y = -100;
+                    break;
+            }
             this.images.on('mousedown',function(e){
                 box.lineStyle(4, 0x000000, 1);
                 box.beginFill(0xFFFFFF);
-                box.drawRoundedRect(0, 1, 420, 950, 8);
+                box.drawRoundedRect(0, 1, 420, 300, 8); //950 dans le height fait tout l'écran
                 box.endFill();
-                box.x = 1680;
+                box.x = 1680;//mesuere a droite de l'écran
                 app.stage.addChild(box);
                 box.visible = true;
+                fermer.position.set(box.x+15,box.y+250);
+                fermer.buttonMode = true;
+                fermer.interactive = true;
+                fermer.visible = true;
                 description.position.set(box.x + 15,box.y);
                 description.visible = true;
-                app.stage.addChild(description);
-                //modal.style.display = "flex";
-                //descriptionId.textContent = desc.text;
+                app.stage.addChild(description,fermer);
             });
-            //Quand on sort de l'image la description disparait
-            this.images.on('mouseout',function(e){
+            //Quand on clique sur fermer la description, elle disparait
+            fermer.on('click',function(e){ //this.images originalement
                 box.visible = false;
+                fermer.visible = false;
                 description.visible = false;
-                //Mettre un truc pour faire disparaitre la description
-
-                //modal.style.display= "none";
-                //descriptionId.textContent = "";
             });
+        }
+        placementTitre(orientation){
+            switch (orientation){
+                case "ouest":
+                    titre.x = -1000;
+                    titre.y = 1500;
+                    break;
+                case "est":
+                    titre.x = 1680;
+                    break;
+                case "nord":
+                    titre.y = 100;
+                    break;
+                case "sud":
+                    titre.y = -100;
+                    break;
+            }
         }
     }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
@@ -142,7 +171,7 @@
     //Style pour le message
     let style = new txts({
         fontFamily: "Arial",
-        fontSize: 60,
+        fontSize: 100,
         fill: "black",
         align:"center",
         fontWeight:"bold",
@@ -154,6 +183,10 @@
     app.renderer.view.style.display = "block";
     app.renderer.resize(window.innerWidth, window.innerHeight);
     app.renderer.backgroundColor = 0xF9F2FB;
+
+    //Varirable pour fermer la description
+    let fermer = new txtp("Fermer la description",{align:'center',fontWeight:'bold', fill:'red'});
+    fermer.visible = false;
    
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
@@ -167,9 +200,10 @@
     //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
     function createVar(){
         for(let i = 0 ; i < data.length ; i++){
-            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics());
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].orientation));
             tab.push(tabobj[i]);
             tab[i].description.visible = false;
+            tab[i].orientation.visible = false;
             console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
         }
         return tabobj;
@@ -218,6 +252,7 @@
     }
     tri();
 
+
     /*Boucle qui permet de rendre cliquable les objets et 
     ajout du message et de l'image dans le container de l'objet 
     et ajout des containers dans la scène principale*/
@@ -227,33 +262,19 @@
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
-        tab[i].message.position.set(tab[i].images.x+100, tab[i].images.y-400);
-        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box);
+        //tab[i].message.position.set(tab[i].images.x+100,tab[i].images.y-1000);
+        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].orientation);
         app.stage.addChild(tab[i].container);
+        //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
+        //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
     }
 
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
-    let powmess = new PIXI.Text("10^"+slider.value.sup());//BC
+    let powmess = new PIXI.Text("10^" + slider.value);//BC
     powmess.position.set(app.view.width/2-120,0);//BC
     app.stage.addChild(powmess);//BC
 
-    //Lorsque que l'on clique sur l'objet un rectangle apparait et l'on peut voir la description
-    /*cont.images.on('mousedown',function(e){
-        alert("Un atome de cristal est très petit de l'ordre de 10^9 à 10^10");
-        let r = new graphics();
-        r.lineStyle(4, 0x000000, 1);
-        r.beginFill(0xFFFFFF);
-        r.drawRoundedRect(0, 0, 200, 200, 10);
-        r.x = cont.images.x+2600;
-        r.y = cont.images.y+570;
-        r.width = 2500;
-        r.height = 2500;
-        cont.container.addChild(r);
-        cont.images.on('mouseout',function(event){
-            r.visible = false;
-        });
-    });*/
     //On console log la valeur quand on arrete de cliquer sur le slider
     slider.addEventListener('click',function(e){
             console.log(slider.value);
@@ -317,7 +338,8 @@
         //Boucle qui permet à chaque objets de voir son placement
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
-            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box);
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,tab[i].orientation._text,fermer,tab[i].message);
+            tab[i].placementTitre(tab[i].orientation);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         //powmess.text = "10^"+slider.value; //BC
