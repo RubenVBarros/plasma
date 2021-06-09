@@ -102,21 +102,6 @@
             let description = new txtp(desc._text);
             description.visible = false;
 
-            switch (orientation){
-                case "ouest":
-                    titre.x = -1000;
-                    titre.y = 1500;
-                    break;
-                case "est":
-                    titre.x = 1680;
-                    break;
-                case "nord":
-                    titre.y = 100;
-                    break;
-                case "sud":
-                    titre.y = -100;
-                    break;
-            }
             this.images.on('mousedown',function(e){
                 box.lineStyle(4, 0x000000, 1);
                 box.beginFill(0xFFFFFF);
@@ -129,7 +114,7 @@
                 fermer.buttonMode = true;
                 fermer.interactive = true;
                 fermer.visible = true;
-                description.position.set(box.x + 15,box.y);
+                description.position.set(box.x + 15,box.y + 10);
                 description.visible = true;
                 app.stage.addChild(description,fermer);
             });
@@ -140,20 +125,23 @@
                 description.visible = false;
             });
         }
-        placementTitre(orientation){
+        placementTitre(titre,orientation){
             switch (orientation){
                 case "ouest":
-                    titre.x = -1000;
-                    titre.y = 1500;
+                    titre.x = this.images.x - 2000;
+                    titre.y = this.images.y;
                     break;
                 case "est":
-                    titre.x = 1680;
+                    titre.x = this.images.x + 2000;
+                    titre.y = this.images.y;
                     break;
                 case "nord":
-                    titre.y = 100;
+                    titre.x = this.images.x;
+                    titre.y = this.images.y - 1000;
                     break;
                 case "sud":
-                    titre.y = -100;
+                    titre.x = this.images.x;
+                    titre.y = this.images.y + 1000;
                     break;
             }
         }
@@ -210,6 +198,7 @@
     }
     createVar();
 
+    /* Ne sait pas encore si le formulaire va être continué...
     function showAdd(){
         form.style.display = "inline";
         form.style.textAlign = "center";
@@ -240,7 +229,7 @@
             uploadvi.style.display = "inline";        
             uploadvlbl.style.display = "inline";        
         }
-    }
+    }*/
 
     //Fonction de tri des images par tailleReelle, les premiers objets dans l'index du tableau sont
     //les plus petits et les derniers sont les plus grands trié par tailleReelle.
@@ -339,7 +328,7 @@
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
             tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,tab[i].orientation._text,fermer,tab[i].message);
-            tab[i].placementTitre(tab[i].orientation);
+            tab[i].placementTitre(tab[i].message,tab[i].orientation._text);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         //powmess.text = "10^"+slider.value; //BC
