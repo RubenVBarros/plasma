@@ -250,9 +250,22 @@
 
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
-    let powmess = new PIXI.Text("10^" + slider.value);//BC
+    function sliderValue(value){
+        if(value >= -3 && value < 3) powmess.text = "10 " + "         (1 mètre)";
+        else if(value >= 3 && value < 6) powmess.text = "10 " +  "         (1 kilomètre)";
+        else if(value >= 6 && value < 9) powmess.text = "10 " +  "         (1 mégamètre)";
+        else if(value >= 9 && value < 12) powmess.text = "10 " +  "         (1 gigamètre)";
+        else if(value >= 12 ) powmess.text = "10 " +  "         (1 téramètre)";
+        else if(value <= -3 && value > -6) powmess.text = "10 " + "         (1 millimètre)";
+        else if(value <= -6 && value > -9) powmess.text = "10 " + "         (1 micromètre)";
+        else if(value <= 9 && value > -12) powmess.text = "10 " + "         (1 nanomètre)";
+        else if(value < -12) powmess.text = "10 " + "         (1 picomètre)";
+    }
+    let sliderv = new txtp(slider.value,{align:'center', fill:'black', fontSize: 15});
+    sliderv.position.set(app.view.width/2-90,0);
+    let powmess = new PIXI.Text("10");//BC
     powmess.position.set(app.view.width/2-120,0);//BC
-    app.stage.addChild(powmess);//BC
+    app.stage.addChild(powmess,sliderv);//BC
 
     //On console log la valeur quand on arrete de cliquer sur le slider
     slider.addEventListener('click',function(e){
@@ -322,7 +335,10 @@
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         //powmess.text = "10^"+slider.value; //BC
-        powmess.text = "10^"+slider.value; //BC
+        powmess.text = "10 " + slider.value;
+        sliderValue(slider.value);
+        sliderv.text = slider.value;
+        sliderv.updateText(true);
 		powmess.updateText(true); //BC
     }
   </script>
