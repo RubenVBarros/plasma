@@ -13,7 +13,8 @@
     <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
     </div>
-    <button type="button" onclick="showAdd()" class="ajout">Ajouter un objet</button>
+    <!-- En maintenance
+        <button type="button" onclick="showAdd()" class="ajout">Ajouter un objet</button>
     <button type="button" onclick="closeAdd()" class="fermer">Fermer la fenêtre</button><br><br>
     <form action="" id="add-objet" onsubmit="checkForm()">
         <label for="upload">Mettez un fichier image de format png ou jpg, ce sont les seules types acceptés :</label><br><br>
@@ -41,6 +42,7 @@
         <textarea id="objdesc" name="objdesc" rows="4" cols="50"></textarea><br><br>
         <input type="submit" value="Ajouter à la base de donnée" id="sub">    
     </form>
+    -->
   <script type="text/javascript">
     //Variable pour obtenir contenu du paragraphe et pour obtenir le div pour le cacher plus tard
     let descriptionId = document.getElementById("description");
@@ -59,7 +61,7 @@
 
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message,description,box,orientation){
+        constructor(container,images,tailleReelle,angle,message,description,box,orientationX,orientationY){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
@@ -67,7 +69,8 @@
             this.message = message;
             this.description = description;
             this.box = box;
-            this.orientation = orientation;
+            this.orientationX = orientationX;
+            this.orientationY = orientationY;
         }
         placement(){
 
@@ -95,7 +98,7 @@
                 this.container.visible = false;//BC
             }
         }
-        showDescription(pict,desc,box,orientation,fermer,titre){
+        showDescription(pict,desc,box,fermer,titre){
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
@@ -125,25 +128,10 @@
                 description.visible = false;
             });
         }
-        placementTitre(titre,orientation){
-            switch (orientation){
-                case "ouest":
-                    titre.x = this.images.x - 2000;
-                    titre.y = this.images.y;
-                    break;
-                case "est":
-                    titre.x = this.images.x + 2000;
-                    titre.y = this.images.y;
-                    break;
-                case "nord":
-                    titre.x = this.images.x;
-                    titre.y = this.images.y - 1000;
-                    break;
-                case "sud":
-                    titre.x = this.images.x;
-                    titre.y = this.images.y + 1000;
-                    break;
-            }
+        placementTitre(titre,orientationX,orientationY){
+            //spécifier valeur x et y rajouter orientationX et orientationY
+            titre.x = orientationX;
+            titre.y = orientationY;
         }
     }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
@@ -188,10 +176,11 @@
     //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
     function createVar(){
         for(let i = 0 ; i < data.length ; i++){
-            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].orientation));
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].orientationX),new txtp(data[i].orientationY));
             tab.push(tabobj[i]);
             tab[i].description.visible = false;
-            tab[i].orientation.visible = false;
+            tab[i].orientationX.visible = false;
+            tab[i].orientationY.visible = false;
             console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
         }
         return tabobj;
@@ -199,6 +188,7 @@
     createVar();
 
     /* Ne sait pas encore si le formulaire va être continué...
+    En maintenance
     function showAdd(){
         form.style.display = "inline";
         form.style.textAlign = "center";
@@ -252,7 +242,7 @@
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
         //tab[i].message.position.set(tab[i].images.x+100,tab[i].images.y-1000);
-        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].orientation);
+        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].orientationX,tab[i].orientationY);
         app.stage.addChild(tab[i].container);
         //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
         //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
@@ -327,8 +317,8 @@
         //Boucle qui permet à chaque objets de voir son placement
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
-            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,tab[i].orientation._text,fermer,tab[i].message);
-            tab[i].placementTitre(tab[i].message,tab[i].orientation._text);
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message);
+            tab[i].placementTitre(tab[i].message,tab[i].orientationX._text,tab[i].orientationY._text);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         //powmess.text = "10^"+slider.value; //BC

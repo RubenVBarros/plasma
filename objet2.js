@@ -5,7 +5,8 @@ let data =[
         "texte":"Molécule de cristal",
         "description":"C'est une molécule de cristal, \nune molécule c'est très petit et \nc'est l'assemblage de plusieurs \natomes.",
         "path":"assets/cristal.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":100
     },
     {
         "tailleReelle":1e-6,
@@ -13,7 +14,8 @@ let data =[
         "texte":"Globule rouge",
         "description":"Les globules rouges permettent \nde transporter l'oxygène vers les \ntissus et elles permettent de \ncapter le gaz carbonique au \nniveau des tissus pour les \néliminer par les voies respiratoires.",
         "path":"assets/globule-rouge.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":100
     },
     {
         "tailleReelle":3e-3,
@@ -21,7 +23,8 @@ let data =[
         "texte":"Larve de poisson",
         "description":"La larve de poisson est le premier \nstade de développement pour un \npoisson, après l'éclosion des \noeufs, c'est comme cela que le \npoisson débute sa vie.",
         "path":"assets/larve.png",
-        "orientation":"est"
+        "orientationX":-800,
+        "orientationY":600
     },
     {
         "tailleReelle":1e-3,
@@ -29,7 +32,8 @@ let data =[
         "texte":"Poisson zèbre",
         "description":"Le poisson zèbre est une espèce \nde poisson très utilisée dans \nle monde scientifique car il aurait \nla particularité de régénérer \ndes parties de son corps en cas \nde blessure, si on pouvait \nappliquer cela aux humains ce \nserait fou !",
         "path":"assets/poisson.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":100
     },
     {
         "tailleReelle":2e-1,
@@ -37,7 +41,8 @@ let data =[
         "texte":"Main",
         "description":"Une main, nous en avons deux \nmais une seule fait près de 20 \ncentimètres, rendez-vous compte \nla taille d'un double décimètre \nmais on peut faire tellement de \nchoses avec, que feriez vous si \nvous n'aviez pas de main ?",
         "path":"assets/main.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":100
     },
     {
         "tailleReelle":12,
@@ -45,7 +50,8 @@ let data =[
         "texte":"Bus",
         "description":"Ca c'est le ScientiBus, c'est la ou \nont lieu les meilleures expériences \nscientifiques de France.",
         "path":"assets/bus.png",
-        "orientation":"est"
+        "orientationX":2000,
+        "orientationY":-200
     },
     {
         "tailleReelle":128,
@@ -53,7 +59,8 @@ let data =[
         "texte":"Cathédrale de Notre Dame",
         "description":"La cathédrale Notre-Dame de \nParis est un monument \nemblématique de Paris bien \nqu'elle ait subit un incendie, son \nhistoire ne s'en trouve pas moins \neffacé. Elle a accueilli le Sacre de \nNapoléon en 1804.",
         "path":"assets/notre-dame.png",
-        "orientation":"est"
+        "orientationX":750,
+        "orientationY":100    
     },
     {
         "tailleReelle":8.8e3,
@@ -61,7 +68,8 @@ let data =[
         "texte":"Ville de Limoges",
         "description":"La ville de Limoges avec ses \nagglomérations autour, c'est la \nville ou vous habitez sûrement !",
         "path":"assets/limoges.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":100    
     },
     {
         "tailleReelle":2.592402e6,
@@ -69,7 +77,8 @@ let data =[
         "texte":"France",
         "description":"C'est la France, pays dans lequel \nnous vivons, c'nord le pays de la \nbaguette et du bon vin.",
         "path":"assets/france.png",
-        "orientation":"est"
+        "orientationX":500,
+        "orientationY":650   
     },
     {
         "tailleReelle":12742000.0,
@@ -77,7 +86,8 @@ let data =[
         "texte":"Terre",
         "description":"La Terre, c'est la planète ou nous \nvivons, le saviez-vous que la Terre \eest composé à 70% d'eau, elle \nréunit aussi tout les critères \nnécessaires pour le \ndéveloppement de la vie.",
         "path":"assets/earth.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":600   
     },
     {
         "tailleReelle":116460000.0,
@@ -85,7 +95,8 @@ let data =[
         "texte":"Saturne",
         "description":"Saturne est la seule planète qui \npossède une couronne d'anneaux \net elle possède plus d'une \ncentaine de satellite !",
         "path":"assets/saturn.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":600   
     },
     {
         "tailleReelle":1.4e9,
@@ -93,7 +104,8 @@ let data =[
         "texte":"Soleil",
         "description":"Le Soleil est notre source de \nlumières et de chaleur, le soleil est \ntellement massif qu'il représente \nplus de 99,854% de la masse \ntotale du Système solaire et il \német 20 000 fois plus d'énergie \nque nous en consommons, c'est \ntotalement dingue !",
         "path":"assets/sun.png",
-        "orientation":"est"
+        "orientationX":100,
+        "orientationY":600   
     },
     {
         "tailleReelle":1000000.0,
@@ -101,6 +113,7 @@ let data =[
         "texte":"Mars",
         "description":"La planete rouge !",
         "path":"assets/mars.png",
-        "orientation":" est"
+        "orientationX":500,
+        "orientationY":600   
     }
 ];
