@@ -128,11 +128,6 @@
                 description.visible = false;
             });
         }
-        placementTitre(titre,positionTexteX,positionTexteY){
-            //rajouter par rapport a l'image
-            titre.x = positionTexteX;
-            titre.y = positionTexteY;
-        }
     }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
     let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
@@ -242,7 +237,7 @@
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
-        //tab[i].message.position.set(tab[i].images.x+100,tab[i].images.y-1000);
+        tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
         tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
         app.stage.addChild(tab[i].container);
         //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
@@ -331,10 +326,8 @@
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
             tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message);
-            tab[i].placementTitre(tab[i].message,tab[i].positionTexteX._text,tab[i].positionTexteY._text);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
-        //powmess.text = "10^"+slider.value; //BC
         powmess.text = "10 ";
         sliderValue(slider.value);
         sliderv.text = slider.value;
