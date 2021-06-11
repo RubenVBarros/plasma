@@ -61,7 +61,7 @@
 
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message,description,box,orientationX,orientationY){
+        constructor(container,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
@@ -69,8 +69,8 @@
             this.message = message;
             this.description = description;
             this.box = box;
-            this.orientationX = orientationX;
-            this.orientationY = orientationY;
+            this.positionTexteX = positionTexteX;
+            this.positionTexteY = positionTexteY;
         }
         placement(){
 
@@ -128,10 +128,10 @@
                 description.visible = false;
             });
         }
-        placementTitre(titre,orientationX,orientationY){
-            //spécifier valeur x et y rajouter orientationX et orientationY
-            titre.x = orientationX;
-            titre.y = orientationY;
+        placementTitre(titre,positionTexteX,positionTexteY){
+            //rajouter par rapport a l'image
+            titre.x = positionTexteX;
+            titre.y = positionTexteY;
         }
     }
     //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
@@ -152,6 +152,7 @@
         align:"center",
         fontWeight:"bold",
       });
+    
 
     //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
     app.renderer.autoResize = true;
@@ -176,11 +177,11 @@
     //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
     function createVar(){
         for(let i = 0 ; i < data.length ; i++){
-            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].orientationX),new txtp(data[i].orientationY));
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY));
             tab.push(tabobj[i]);
             tab[i].description.visible = false;
-            tab[i].orientationX.visible = false;
-            tab[i].orientationY.visible = false;
+            tab[i].positionTexteX.visible = false;
+            tab[i].positionTexteY.visible = false;
             console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
         }
         return tabobj;
@@ -242,7 +243,7 @@
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
         //tab[i].message.position.set(tab[i].images.x+100,tab[i].images.y-1000);
-        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].orientationX,tab[i].orientationY);
+        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
         app.stage.addChild(tab[i].container);
         //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
         //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
@@ -251,15 +252,14 @@
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
     function sliderValue(value){
-        if(value >= -3 && value < 3) powmess.text = "10 " + "         (1 mètre)";
-        else if(value >= 3 && value < 6) powmess.text = "10 " +  "         (1 kilomètre)";
-        else if(value >= 6 && value < 9) powmess.text = "10 " +  "         (1 mégamètre)";
-        else if(value >= 9 && value < 12) powmess.text = "10 " +  "         (1 gigamètre)";
-        else if(value >= 12 ) powmess.text = "10 " +  "         (1 téramètre)";
-        else if(value <= -3 && value > -6) powmess.text = "10 " + "         (1 millimètre)";
-        else if(value <= -6 && value > -9) powmess.text = "10 " + "         (1 micromètre)";
-        else if(value <= 9 && value > -12) powmess.text = "10 " + "         (1 nanomètre)";
-        else if(value < -12) powmess.text = "10 " + "         (1 picomètre)";
+        if(value >= -3 && value < 3) powmess.text = "10 " + "         (" + Math.pow(10,value).toFixed(2) + " mètres)";
+        else if(value >= 3 && value < 6) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000).toFixed(2) + " kilomètres)";
+        else if(value >= 6 && value < 9) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000).toFixed(2) + " mégamètres)";
+        else if(value >= 9 && value < 12) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000).toFixed(2) + " gigamètres)";
+        else if(value >= 12 ) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000000).toFixed(2) + " téramètres)";
+        else if(value <= -3 && value > -6) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000).toFixed(2) + " millimètres)";
+        else if(value <= -6 && value > -9) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000).toFixed(2) + " micromètres)";
+        else if(value <= -9 && value > -12) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000000).toFixed(2) + " nanomètres)";
     }
     let sliderv = new txtp(slider.value,{align:'center', fill:'black', fontSize: 15});
     sliderv.position.set(app.view.width/2-90,0);
@@ -331,11 +331,11 @@
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
             tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message);
-            tab[i].placementTitre(tab[i].message,tab[i].orientationX._text,tab[i].orientationY._text);
+            tab[i].placementTitre(tab[i].message,tab[i].positionTexteX._text,tab[i].positionTexteY._text);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         //powmess.text = "10^"+slider.value; //BC
-        powmess.text = "10 " + slider.value;
+        powmess.text = "10 ";
         sliderValue(slider.value);
         sliderv.text = slider.value;
         sliderv.updateText(true);
