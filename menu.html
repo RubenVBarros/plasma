@@ -159,7 +159,12 @@
     //Varirable pour fermer la description
     let fermer = new txtp("Fermer la description",{align:'center',fontWeight:'bold', fill:'red'});
     fermer.visible = false;
-   
+
+    let bg = new PIXI.Container();
+    app.stage.addChild(bg);
+    let bgimg = new Sprite.from(bgImage);
+    bg.addChild(bgimg);
+
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
     

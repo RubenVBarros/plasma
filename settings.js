@@ -6,4 +6,4 @@
  let centreX = 700;
 
  //Image de l'arrière plan de l'application (pas fonctionnel encore)
- let bgImage = "assets/image.png";
+ let bgImage = "assets/rome.jpg";
