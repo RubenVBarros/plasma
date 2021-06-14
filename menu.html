@@ -68,7 +68,7 @@
                 this.container.visible = false;//BC
             }
         }
-        showDescription(pict,desc,box,fermer,titre){
+        showDescription(pict,desc,box,fermer,titre,video){
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
@@ -84,18 +84,27 @@
                 app.stage.addChild(box);
                 box.visible = true;
                 fermer.position.set(box.x+15,box.y+250);
+                video.position.set(box.x+300,box.y+250);
+                video.buttonMode = true;
+                video.interactive = true;
+                video.visible = true;
                 fermer.buttonMode = true;
                 fermer.interactive = true;
                 fermer.visible = true;
                 description.position.set(box.x + 15,box.y + 10);
                 description.visible = true;
-                app.stage.addChild(description,fermer);
+                app.stage.addChild(description,fermer,video);
             });
             //Quand on clique sur fermer la description, elle disparait
             fermer.on('click',function(e){ //this.images originalement
                 box.visible = false;
+                video.visible = false;
                 fermer.visible = false;
                 description.visible = false;
+            });
+            //Video marche voir pour rajouter un champ video dans la classe.
+            video.on('click',function(e){
+                window.open("assets/miss.mp4");
             });
         }
     }
@@ -129,6 +138,8 @@
     //Varirable pour fermer la description
     let fermer = new txtp("Fermer la description",{align:'center',fontWeight:'bold', fill:'red'});
     fermer.visible = false;
+    let video = new txtp("Vidéo",{align:'center',fontWeight:'bold', fill:'blue'});
+    video.visible = false;
 
     /* Fond d'écran pour l'app
     let bg = new PIXI.Container();
@@ -229,7 +240,7 @@
         //Boucle qui permet à chaque objets de voir son placement
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
-            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message);
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message,video);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         powmess.text = "10 ";
