@@ -115,5 +115,15 @@ let data =[
         "positionTexteY":0, 
         "description":"La planete rouge !",
         "path":"assets/mars.png"
-    }
+    },
+    /* test du gif marche pas
+    {
+        "tailleReelle":1,
+        "angle":Math.PI/7,
+        "texte":"Roi",
+        "positionTexteX":-400,
+        "positionTexteY":0, 
+        "description":"Sa majesté le roi de france !",
+        "path":"assets/roi.gif"
+    }*/
 ];

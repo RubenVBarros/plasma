@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Plasma - Echelle de l'univers</title>
+  <link type="text/css" rel="stylesheet" href="menu.css">
+</head>
+  <script src="pixi/pixi.min.js"></script>
+  <script type='text/javascript' src='//code.jquery.com/jquery-1.10.1.js'></script>
+  <script src="objet2.js"></script>
+  <script src="settings.js"></script>
+<body>
+    <div class="slidecontainer">
+        <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
+    </div>
+    <!-- En maintenance
+        <button type="button" onclick="showAdd()" class="ajout">Ajouter un objet</button>
+    <button type="button" onclick="closeAdd()" class="fermer">Fermer la fenêtre</button><br><br>
+    <form action="" id="add-objet" onsubmit="checkForm()">
+        <label for="upload">Mettez un fichier image de format png ou jpg, ce sont les seules types acceptés :</label><br><br>
+        <input type="file" id="upload" accept="image/png, image/jpeg" name="file"/><br><br>
+        <label for="uploadv" id="uploadvlbl">Mettez un fichier vidéo de format mp4 :</label><br><br>
+        <input type="file" id="uploadvi" accept="video/mp4" name="uploadv"/><br><br>
+        <label for="objname">Nom de l'objet :</label>
+        <input type="text" id="objname" name="objname"><br><br>
+        <label for="objsize">Taille Réelle de l'objet (dans la vie réelle en mètre) :</label>
+        <input type="text" id="objsize" name="objsize"><br><br>
+        <label for="objangle">Angle de placement :</label>
+        <select type="text" id="objangle" name="objangle" size="4"><br><br>
+            <option>Nord</option>
+            <option>Nord-Est</option>
+            <option>Nord-Ouest</option>
+            <option>Sud</option>
+            <option>Sud-Est</option>
+            <option>Sud-Ouest</option>
+            <option>Est</option>
+            <option>Ouest</option>
+        </select><br><br>
+        <label for="video">Mettre une Vidéo ?</label>
+        <input type="checkbox" id="video" name="video" onchange="toogleVideo(this)"><br><br>
+        <label for="objdesc">La description de l'objet :</label><br>
+        <textarea id="objdesc" name="objdesc" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="Ajouter à la base de donnée" id="sub">    
+    </form>
+    -->
+  <script type="text/javascript">
+    //Variable pour obtenir contenu du paragraphe et pour obtenir le div pour le cacher plus tard
+    let descriptionId = document.getElementById("description");
+    let form = document.getElementById("add-objet");
+    let lbl = document.getElementsByClassName("ajout");
+    let lblf = document.getElementsByClassName("fermer");
+    let chk = document.getElementById("video");
+
+    //Si le navigateur ne prend pas en charge WebGL il utilise alors un Canvas à la place du renderer
+    let type = "WebGL"
+    if(!PIXI.utils.isWebGLSupported()){
+      type = "canvas"
+    }
+    //Ajout du slider 
+    let slider = document.getElementById("ma-range");
+
+    //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
+    class Pictures{
+        constructor(container,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY){
+            this.container = container;
+            this.images = images;
+            this.tailleReelle = tailleReelle;
+            this.angle = angle;
+            this.message = message;
+            this.description = description;
+            this.box = box;
+            this.positionTexteX = positionTexteX;
+            this.positionTexteY = positionTexteY;
+        }
+        placement(){
+
+            //Variable qui récupère la valuer du slider qui permettra de faire les calculs
+            let curseur = Math.pow(10,slider.value);
+
+            //Varible qui permet de faire les calculs pour la position et pour le calcul du ratio
+            let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
+            ratio = this.tailleReelle / curseur;
+            //Calculs de placement et déplacement des objets 
+            if (ratio < 10) 
+            { 
+                ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
+                largeur = this.container.width * ratio * ratioTaille;
+                hauteur = this.container.height * ratio * ratioTaille;
+                positionX = (centreX) + (ratio*rayon*Math.cos(this.angle));
+                positionY = (app.view.height/2) + (ratio*rayon*Math.sin(this.angle));
+                this.container.x = centreX;
+                this.container.y = positionY - hauteur/2;
+                this.container.width = largeur;
+                this.container.height = hauteur;
+                this.container.visible = true;//BC
+            }
+            else {
+                this.container.visible = false;//BC
+            }
+        }
+        showDescription(pict,desc,box,fermer,titre){
+            //Pour l'instant :
+            //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
+            //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
+            let description = new txtp(desc._text);
+            description.visible = false;
+
+            this.images.on('mousedown',function(e){
+                box.lineStyle(4, 0x000000, 1);
+                box.beginFill(0xFFFFFF);
+                box.drawRoundedRect(0, 1, 420, 300, 8); //950 dans le height fait tout l'écran
+                box.endFill();
+                box.x = 1680;//mesuere a droite de l'écran
+                app.stage.addChild(box);
+                box.visible = true;
+                fermer.position.set(box.x+15,box.y+250);
+                fermer.buttonMode = true;
+                fermer.interactive = true;
+                fermer.visible = true;
+                description.position.set(box.x + 15,box.y + 10);
+                description.visible = true;
+                app.stage.addChild(description,fermer);
+            });
+            //Quand on clique sur fermer la description, elle disparait
+            fermer.on('click',function(e){ //this.images originalement
+                box.visible = false;
+                fermer.visible = false;
+                description.visible = false;
+            });
+        }
+    }
+    //Initailisation de l'app et des variables pour les sprites et les graphiques et autres... 
+    let app = new PIXI.Application({width: 2133, height: 1118, antialias:true,transparent:false,resolution:1}),
+    Sprite = PIXI.Sprite,
+    loader = PIXI.loader,
+    graphics  = PIXI.Graphics,
+    txtp = PIXI.Text,
+    txts = PIXI.TextStyle,
+    ls = PIXI.LineStyle,
+    resources = PIXI.Loader.resources;
+
+    //Style pour le message
+    let style = new txts({
+        fontFamily: "Arial",
+        fontSize: 100,
+        fill: "black",
+        align:"center",
+        fontWeight:"bold",
+      });
+    
+
+    //Le canvas prend l'entiereté de la fenêtre et se resize automatiquement, selon le redimensionnement de la fenêtre
+    app.renderer.autoResize = true;
+    app.renderer.view.style.position = "absolute";
+    app.renderer.view.style.display = "block";
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+    app.renderer.backgroundColor = 0xF9F2FB;
+
+    //Varirable pour fermer la description
+    let fermer = new txtp("Fermer la description",{align:'center',fontWeight:'bold', fill:'red'});
+    fermer.visible = false;
+
+    /* Fond d'écran pour l'app
+    let bg = new PIXI.Container();
+    app.stage.addChild(bg);
+    let bgimg = new Sprite.from(bgImage);
+    bg.addChild(bgimg);*/
+
+    //Le canvas est ajouté dans l'app directement
+    document.body.appendChild(app.view);
+    
+    //Tableau principal qui va recevoir les indices de l'autre tableau
+    let tab = [];
+
+    //Tableau secondaire qui va avoir une classe créer avec les infos du fichier JS
+    let tabobj = [];
+
+    //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
+    function createVar(){
+        for(let i = 0 ; i < data.length ; i++){
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY));
+            tab.push(tabobj[i]);
+            tab[i].description.visible = false;
+            tab[i].positionTexteX.visible = false;
+            tab[i].positionTexteY.visible = false;
+            console.log("Element numéro : "+ i + " " + tabobj[i].message._text);
+        }
+        return tabobj;
+    }
+    createVar();
+
+    /* Ne sait pas encore si le formulaire va être continué...
+    En maintenance
+    function showAdd(){
+        form.style.display = "inline";
+        form.style.textAlign = "center";
+    }
+    function closeAdd(){
+        form.style.display = "none";
+    }
+    function checkForm(){
+        let fichier = document.forms["add-objet"]["file"].value;
+        let nom = document.forms["add-objet"]["objname"].value;
+        let taille = document.forms["add-objet"]["objsize"].value;
+        let angle = document.forms["add-objet"]["objangle"].value;
+        let description = document.forms["add-objet"]["objdesc"].value;
+        let video = document.forms["add-objet"]["uploadv"].value;
+        if (fichier == "" || nom == "" || taille == "" || angle == "" || description == "" || chk.checked == true && video == "") {
+                alert("Il vous manque un ou plusieurs champs non remplis");
+        }
+        else{
+            closeAdd();
+        }
+    }
+    function toogleVideo(element){
+        if (element.checked == false){
+            uploadvi.style.display = "none";
+            uploadvlbl.style.display = "none";
+        }
+        else{
+            uploadvi.style.display = "inline";        
+            uploadvlbl.style.display = "inline";        
+        }
+    }*/
+
+    //Fonction de tri des images par tailleReelle, les premiers objets dans l'index du tableau sont
+    //les plus petits et les derniers sont les plus grands trié par tailleReelle.
+    //Le tri fait la différence entre deux éléments et les réarrage selon un ordre croissant.
+    function tri(){
+        for(let i = 0; i < tab.length; i++){
+            tab.sort((first,second) => first.tailleReelle - second.tailleReelle);
+        }
+    }
+    tri();
+
+
+    /*Boucle qui permet de rendre cliquable les objets et 
+    ajout du message et de l'image dans le container de l'objet 
+    et ajout des containers dans la scène principale*/
+    for(let i = 0 ; i < tab.length ; i++){
+        tab[i].images.x = app.view.width/2;
+        tab[i].images.y = app.view.height/2;
+        tab[i].images.buttonMode = true;
+        tab[i].images.interactive = true;
+        tab[i].images.anchor.set(0.2);
+        tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
+        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
+        app.stage.addChild(tab[i].container);
+        //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
+        //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
+    }
+
+    //Fonction pour l'ajout de l'équivalence du texte (10 mètres, 100 mètres...)
+    function sliderValue(value){
+        if(value >= -3 && value < 3) powmess.text = "10 " + "         (" + Math.pow(10,value).toFixed(2) + " mètres)";
+        else if(value >= 3 && value < 6) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000).toFixed(2) + " kilomètres)";
+        else if(value >= 6 && value < 9) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000).toFixed(2) + " mégamètres)";
+        else if(value >= 9 && value < 12) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000).toFixed(2) + " gigamètres)";
+        else if(value >= 12 ) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000000).toFixed(2) + " téramètres)";
+        else if(value <= -3 && value > -6) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000).toFixed(2) + " millimètres)";
+        else if(value <= -6 && value > -9) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000).toFixed(2) + " micromètres)";
+        else if(value <= -9 && value > -12) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000000).toFixed(2) + " nanomètres)";
+    }
+    //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
+    //Et ajout du message dans la scène principale
+    let sliderv = new txtp(slider.value,{align:'center', fill:'black', fontSize: 15});
+    sliderv.position.set(app.view.width/2-90,0);
+    let powmess = new PIXI.Text("10");//BC
+    powmess.position.set(app.view.width/2-120,0);//BC
+    app.stage.addChild(powmess,sliderv);//BC
+
+    //On console log la valeur quand on arrete de cliquer sur le slider
+    slider.addEventListener('click',function(e){
+            console.log(slider.value);
+    });
+
+    //On initialise l'état d'animation
+    //Le state est alors un composant qui permet de faire tourner à 60 FPS l'animation
+    state = draw;
+    
+    //On ajout la fonction pour la boucle et on l'a commence
+    app.ticker.add(delta => loop(delta));
+    app.ticker.start();
+
+    //Boucle d'animation
+    function loop(delta){
+        state(delta)
+    }
+
+    //La fonction play permet alors de voir l'animation grâce à la boucle
+    function draw(delta){
+
+        //Boucle qui permet à chaque objets de voir son placement
+        for(let i = 0;i < tab.length;i++){
+            tab[i].placement();
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message);
+        }
+        //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
+        powmess.text = "10 ";
+        sliderValue(slider.value);
+        sliderv.text = slider.value;
+        sliderv.updateText(true);
+		powmess.updateText(true); //BC
+
+        document.body.onwheel = function(){scrollZoom(event)};
+        function scrollZoom(event){
+            if(event.deltaY > 0){
+                for(let i = 0 ;i < delta ; i++){
+                    slider.value += 0.01;
+                }
+            }
+            else{
+                for(let i = 0 ; i < delta ; i++){
+                    slider.value -= 0.1;
+                }
+            }
+        }
+    }
+  </script>
+</body>
+</html>
