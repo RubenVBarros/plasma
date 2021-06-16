@@ -75,7 +75,7 @@
                 box.beginFill(0xFFFFFF);
                 box.drawRoundedRect(0, 1, 420, 300, 8); //950 dans le height fait tout l'écran
                 box.endFill();
-                box.x = 1680;//mesuere a droite de l'écran
+                box.x = app.view.width/2+510;//mesuere a droite de l'écran
                 app.stage.addChild(box);
                 box.visible = true;
                 fermer.position.set(box.x + 15, box.y + 250);
