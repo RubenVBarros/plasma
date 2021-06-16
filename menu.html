@@ -11,27 +11,21 @@
   <script src="settings.js"></script>
 <body>
     <div class="slidecontainer">
-        <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="ma-range">
+        <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="marange">
     </div>
   <script type="text/javascript">
-    //Variable pour obtenir contenu du paragraphe et pour obtenir le div pour le cacher plus tard
-    let descriptionId = document.getElementById("description");
-    let form = document.getElementById("add-objet");
-    let lbl = document.getElementsByClassName("ajout");
-    let lblf = document.getElementsByClassName("fermer");
-    let chk = document.getElementById("video");
-
     //Si le navigateur ne prend pas en charge WebGL il utilise alors un Canvas à la place du renderer
     let type = "WebGL"
     if(!PIXI.utils.isWebGLSupported()){
       type = "canvas"
     }
     //Ajout du slider 
-    let slider = document.getElementById("ma-range");
+    let slider = document.getElementById("marange");
+    slider.value = valeurInitiale;
 
     //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY){
+        constructor(container,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY,video){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
@@ -41,6 +35,7 @@
             this.box = box;
             this.positionTexteX = positionTexteX;
             this.positionTexteY = positionTexteY;
+            this.video = video;
         }
         placement(){
 
@@ -68,7 +63,7 @@
                 this.container.visible = false;//BC
             }
         }
-        showDescription(pict,desc,box,fermer,titre,video){
+        showDescription(pict,desc,box,fermer,titre,txtvideo,video){
             //Pour l'instant :
             //On fait apparaitre le div quand on clique sur l'objet et on le fait disparaitre quand
             //on a plus le focus sur l'objet, on affecte au paragraphe le texte de la description qui est déjà défini.
@@ -83,28 +78,30 @@
                 box.x = 1680;//mesuere a droite de l'écran
                 app.stage.addChild(box);
                 box.visible = true;
-                fermer.position.set(box.x+15,box.y+250);
-                video.position.set(box.x+300,box.y+250);
-                video.buttonMode = true;
-                video.interactive = true;
-                video.visible = true;
+                fermer.position.set(box.x + 15, box.y + 250);
+                    if(video != "") //Le texte video apparaît que si une video est renseignée dans le champ video du fichier objet2.js
+                    {
+                        txtvideo.position.set(box.x+300,box.y+250);
+                        txtvideo.buttonMode = true;
+                        txtvideo.interactive = true;
+                        txtvideo.visible = true;
+                        txtvideo.on('click',function(e){
+                            window.open(video);
+                        });
+                    }
                 fermer.buttonMode = true;
                 fermer.interactive = true;
                 fermer.visible = true;
                 description.position.set(box.x + 15,box.y + 10);
                 description.visible = true;
-                app.stage.addChild(description,fermer,video);
+                app.stage.addChild(description,fermer,txtvideo,video);
             });
             //Quand on clique sur fermer la description, elle disparait
-            fermer.on('click',function(e){ //this.images originalement
+            fermer.on('click',function(e){
                 box.visible = false;
-                video.visible = false;
+                txtvideo.visible = false;
                 fermer.visible = false;
                 description.visible = false;
-            });
-            //Video marche voir pour rajouter un champ video dans la classe.
-            video.on('click',function(e){
-                window.open("assets/miss.mp4");
             });
         }
     }
@@ -147,6 +144,7 @@
     let bgimg = new Sprite.from(bgImage);
     bg.addChild(bgimg);*/
 
+
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
     
@@ -159,7 +157,7 @@
     //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
     function createVar(){
         for(let i = 0 ; i < data.length ; i++){
-            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY));
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY),data[i].video);
             tab.push(tabobj[i]);
             tab[i].description.visible = false;
             tab[i].positionTexteX.visible = false;
@@ -185,13 +183,13 @@
     ajout du message et de l'image dans le container de l'objet 
     et ajout des containers dans la scène principale*/
     for(let i = 0 ; i < tab.length ; i++){
-        tab[i].images.x = app.view.width/2;
-        tab[i].images.y = app.view.height/2;
+        tab[i].images.x = app.view.width / 2;
+        tab[i].images.y = app.view.height / 2;
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
         tab[i].images.anchor.set(0.2);
         tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
-        tab[i].container.addChild(tab[i].images,tab[i].message,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
+        tab[i].container.addChild(tab[i].images,tab[i].message)//,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
         app.stage.addChild(tab[i].container);
         //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
         //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
@@ -211,9 +209,9 @@
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
     let sliderv = new txtp(slider.value,{align:'center', fill:'black', fontSize: 15});
-    sliderv.position.set(app.view.width/2-90,0);
+    sliderv.position.set(app.view.width / 2 -90, 0);
     let powmess = new PIXI.Text("10");//BC
-    powmess.position.set(app.view.width/2-120,0);//BC
+    powmess.position.set(app.view.width / 2 -120, 0);//BC
     app.stage.addChild(powmess,sliderv);//BC
 
     //On console log la valeur quand on arrete de cliquer sur le slider
@@ -240,7 +238,7 @@
         //Boucle qui permet à chaque objets de voir son placement
         for(let i = 0;i < tab.length;i++){
             tab[i].placement();
-            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message,video);
+            tab[i].showDescription(tab[i].images,tab[i].description,tab[i].box,fermer,tab[i].message,video,tab[i].video);
         }
         //Redéfinition du texte de la puissance et mise à jour à chaque frame du texte de la puissance 
         powmess.text = "10 ";
@@ -249,6 +247,7 @@
         sliderv.updateText(true);
 		powmess.updateText(true); //BC
 
+        //déplacement via scroll
         document.body.onwheel = function(){scrollZoom(event)};
         function scrollZoom(event){
             if(event.deltaY > 0){
