@@ -120,10 +120,10 @@ let data =[
         "video":""
     },
     {
-        "tailleReelle":2000000.0,
+        "tailleReelle":3389500,
         "angle":Math.PI/7,
-        "texte":"Mars (2000 km)",
-        "positionTexteX":-800,
+        "texte":"Mars (3 389,5 km)",
+        "positionTexteX":-900,
         "positionTexteY":0, 
         "description":"La planete rouge !",
         "path":"assets/mars.png",

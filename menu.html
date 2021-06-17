@@ -46,14 +46,15 @@
             let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
             ratio = this.tailleReelle / curseur;
             //Calculs de placement et déplacement des objets 
-            if (ratio < 10) 
+            if ((ratio > 0.015) && (ratio < 10)) // BC 16/06
             { 
                 ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
                 largeur = this.container.width * ratio * ratioTaille;
                 hauteur = this.container.height * ratio * ratioTaille;
+                ratio *= ratio; // BC 16/06
                 positionX = (centreX) + (ratio*rayon*Math.cos(this.angle));
-                positionY = (app.view.height/2) + (ratio*rayon*Math.sin(this.angle));
-                this.container.x = centreX;
+                positionY = (app.view.height/2) - (ratio*rayon*Math.sin(this.angle)); // BC 16/06
+                this.container.x = positionX - largeur/2; // BC 16/06
                 this.container.y = positionY - hauteur/2;
                 this.container.width = largeur;
                 this.container.height = hauteur;
@@ -120,7 +121,7 @@
         fontFamily: "Arial",
         fontSize: 100,
         fill: "black",
-        align:"center",
+        align:"left", // BC 16/06
         fontWeight:"bold",
       });
     
@@ -183,16 +184,15 @@
     ajout du message et de l'image dans le container de l'objet 
     et ajout des containers dans la scène principale*/
     for(let i = 0 ; i < tab.length ; i++){
-        tab[i].images.x = app.view.width / 2;
-        tab[i].images.y = app.view.height / 2;
+        tab[i].images.x = 0;//centreX //app.view.width / 2 // BC 16/06
+        tab[i].images.y = 0;//app.view.height / 2 - tab[i].images.height/2; BC 16/06
         tab[i].images.buttonMode = true;
         tab[i].images.interactive = true;
-        tab[i].images.anchor.set(0.2);
-        tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
-        tab[i].container.addChild(tab[i].images,tab[i].message)//,tab[i].description,tab[i].box,tab[i].positionTexteX,tab[i].positionTexteY);
+        //tab[i].images.anchor.set(0.2); // BC 16/06
+        //tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
+        tab[i].message.position.set(parseFloat(tab[i].positionTexteX._text), parseFloat(tab[i].positionTexteY._text)); // BC 16/06
+        tab[i].container.addChild(tab[i].images,tab[i].message);
         app.stage.addChild(tab[i].container);
-        //si marche pas dans app rajouter dans container et essayer de changer la taille effacer l'avant derniere ligne
-        //dans message position set il si marche pas ave la tech de l'app remettre tab[i].images + 1000 pour x je crois et +400 pour y
     }
 
     //Fonction pour l'ajout de l'équivalence du texte (10 mètres, 100 mètres...)
