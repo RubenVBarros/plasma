@@ -46,11 +46,21 @@
             let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
             ratio = this.tailleReelle / curseur;
             //Calculs de placement et déplacement des objets 
-            if ((ratio > 0.015) && (ratio < 10)) // BC 16/06
+            if ((ratio < 10)) // BC 16/06
             { 
-                ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
+                /*ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
                 largeur = this.container.width * ratio * ratioTaille;
-                hauteur = this.container.height * ratio * ratioTaille;
+                hauteur = this.container.height * ratio * ratioTaille;*/
+                if(this.container.width > this.container.height){
+                    ratioTaille = this.container.height / this.container.width;
+                    largeur = ratio * tailleRef;
+                    hauteur = largeur * ratioTaille;
+                }
+                else{
+                    ratioTaille =  this.container.width / this.container.height;
+                    hauteur = ratio * tailleRef;
+                    largeur = hauteur * ratioTaille;
+                }
                 ratio *= ratio; // BC 16/06
                 positionX = (centreX) + (ratio*rayon*Math.cos(this.angle));
                 positionY = (app.view.height/2) - (ratio*rayon*Math.sin(this.angle)); // BC 16/06
