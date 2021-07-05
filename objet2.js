@@ -41,7 +41,7 @@ let data =[
     },
     {
         "tailleReelle":2e-1,
-        "angle":Math.PI/8,
+        "angle":3*Math.PI/2,
         "texte":"Main (20 cm)",
         "positionTexteX":1200,
         "positionTexteY":-400,

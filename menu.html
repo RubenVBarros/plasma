@@ -10,22 +10,20 @@
   <script src="objet2.js"></script>
   <script src="settings.js"></script>
 <body>
-    <div class="slidecontainer">
         <input type="range" min="-10" max="12" value="1" step="0.000001" class="slider" id="marange">
-    </div>
   <script type="text/javascript">
     //Si le navigateur ne prend pas en charge WebGL il utilise alors un Canvas à la place du renderer
     let type = "WebGL"
     if(!PIXI.utils.isWebGLSupported()){
       type = "canvas"
     }
-    //Ajout du slider 
+    //Ajout du slider et initailisation de la puissance du début 
     let slider = document.getElementById("marange");
     slider.value = valeurInitiale;
 
-    //Classe des objets, qui possède un container, une image, sa tailleReelle, son angle de fin et son titre
+    //Classe des objets, qui possède un container pour l'image et le titre, une image, sa tailleReelle, son angle de fin et son titre et sa position, sa description, sa vidéo
     class Pictures{
-        constructor(container,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY,video){
+        constructor(container,containerTexte,images,tailleReelle,angle,message,description,box,positionTexteX,positionTexteY,video){
             this.container = container;
             this.images = images;
             this.tailleReelle = tailleReelle;
@@ -36,6 +34,7 @@
             this.positionTexteX = positionTexteX;
             this.positionTexteY = positionTexteY;
             this.video = video;
+            this.containerTexte = containerTexte; // BC 30/06
         }
         placement(){
 
@@ -45,7 +44,9 @@
             //Varible qui permet de faire les calculs pour la position et pour le calcul du ratio
             let ratio, ratioTaille, largeur, hauteur, positionX, positionY;
             ratio = this.tailleReelle / curseur;
-            //Calculs de placement et déplacement des objets 
+
+            //Calculs de placement et déplacement des objets             
+            this.containerTexte.visible = false; // BC 30/06
             if ((ratio < 10)) // BC 16/06
             { 
                 /*ratioTaille = tailleRef/(Math.max(this.container.width, this.container.height));	
@@ -69,6 +70,12 @@
                 this.container.width = largeur;
                 this.container.height = hauteur;
                 this.container.visible = true;//BC
+
+                if (ratio > apparitionTexte) { // BC 30/06: à mettre comme variable globale permettant de contrôler l'effet "popup" du texte ?
+                	this.containerTexte.x = this.container.x + ratio*parseFloat(this.positionTexteX._text);// - this.containerTexte.width/2; // BC 30/06
+									this.containerTexte.y = this.container.y + ratio*parseFloat(this.positionTexteY._text);// - this.containerTexte.height/2; // BC 30/06
+                	this.containerTexte.visible = true; // BC 30/06
+                }
             }
             else {
                 this.container.visible = false;//BC
@@ -123,15 +130,14 @@
     graphics  = PIXI.Graphics,
     txtp = PIXI.Text,
     txts = PIXI.TextStyle,
-    ls = PIXI.LineStyle,
     resources = PIXI.Loader.resources;
 
     //Style pour le message
     let style = new txts({
         fontFamily: "Arial",
-        fontSize: 100,
+        fontSize: 20,//BC 30/06
         fill: "black",
-        align:"left", // BC 16/06
+        align:"center", // BC 30/06
         fontWeight:"bold",
       });
     
@@ -140,6 +146,7 @@
     app.renderer.autoResize = true;
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
+    app.renderer.view.style.margin = "0% 0% 0% 0%";
     app.renderer.resize(window.innerWidth - 19 , window.innerHeight - 56);
     app.renderer.backgroundColor = 0xF9F2FB;
 
@@ -155,11 +162,10 @@
     let bgimg = new Sprite.from(bgImage);
     bg.addChild(bgimg);
 
-
     //Le canvas est ajouté dans l'app directement
     document.body.appendChild(app.view);
     
-    //Tableau principal qui va recevoir les indices de l'autre tableau
+    //Tableau principal qui va recevoir les infos de l'autre tableau
     let tab = [];
 
     //Tableau secondaire qui va avoir une classe créer avec les infos du fichier JS
@@ -168,7 +174,7 @@
     //Fonction pour créer chaque classes correspondant au nombre d'objets mis dans le fichier JS et ajout dans le tableau pour faire un tri
     function createVar(){
         for(let i = 0 ; i < data.length ; i++){
-            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY),data[i].video);
+            tabobj[i] = new Pictures(new PIXI.Container,new PIXI.Container,new PIXI.Sprite.from(data[i].path),data[i].tailleReelle,data[i].angle,new txtp(data[i].texte,style),new txtp(data[i].description,style),new graphics(),new txtp(data[i].positionTexteX),new txtp(data[i].positionTexteY),data[i].video);
             tab.push(tabobj[i]);
             tab[i].description.visible = false;
             tab[i].positionTexteX.visible = false;
@@ -200,27 +206,26 @@
         tab[i].images.interactive = true;
         //tab[i].images.anchor.set(0.2); // BC 16/06
         //tab[i].message.position.set(tab[i].images.x + parseFloat(tab[i].positionTexteX._text), tab[i].images.y + parseFloat(tab[i].positionTexteY._text));
-        tab[i].message.position.set(parseFloat(tab[i].positionTexteX._text), parseFloat(tab[i].positionTexteY._text)); // BC 16/06
-        tab[i].container.addChild(tab[i].images,tab[i].message);
-        app.stage.addChild(tab[i].container);
+        //tab[i].message.position.set(parseFloat(tab[i].positionTexteX._text), parseFloat(tab[i].positionTexteY._text)); // BC 16/06
+        tab[i].container.addChild(tab[i].images);
+        tab[i].message.position.set(0, 0); // BC 30/06
+        tab[i].containerTexte.addChild(tab[i].message); // BC 30/06
+        app.stage.addChild(tab[i].container,tab[i].containerTexte); //BC 30/06 rajout du containerTexte ds la scene
     }
 
     //Fonction pour l'ajout de l'équivalence du texte (10 mètres, 100 mètres...)
     function sliderValue(value){
-        if(value >= -3 && value < 3) powmess.text = "10 " + "         (" + Math.pow(10,value).toFixed(2) + " mètres)";
-        else if(value >= 3 && value < 6) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000).toFixed(2) + " kilomètres)";
-        else if(value >= 6 && value < 9) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000).toFixed(2) + " mégamètres)";
-        else if(value >= 9 && value < 12) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000).toFixed(2) + " gigamètres)";
-        else if(value >= 12 ) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000000000000).toFixed(2) + " téramètres)";
-        else if(value <= -3 && value > -6) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000).toFixed(2) + " millimètres)";
-        else if(value <= -6 && value > -9) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000).toFixed(2) + " micromètres)";
-        else if(value <= -9 && value > -12) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000000).toFixed(2) + " nanomètres)";
+        if(value >= -2 && value < 3) powmess.text = "10 " + "         (" + Math.pow(10,value).toFixed(2) + " mètres)";
+        else if(value >= 3 && value < 12) powmess.text = "10 " +  "         (" + (Math.pow(10,value)/1000).toFixed(2) + " kilomètres)"; //L'année lumière est à partir de 10^16
+        else if(value <= -2 && value > -4) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000).toFixed(2) + " centimètres)";
+        else if(value <= -4 && value > -7) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000).toFixed(2) + " micromètres)";
+        else if(value <= -7 && value > -10) powmess.text = "10 " + "         (" + (Math.pow(10,value)*1000000000).toFixed(2) + " nanomètres)";
     }
     //Initialisation du message de la puissance comme du texte et positionnement de celui-ci
     //Et ajout du message dans la scène principale
     let sliderv = new txtp(slider.value,{align:'center', fill:'black', fontSize: 15});
     sliderv.position.set(app.view.width / 2 -90, 0);
-    let powmess = new PIXI.Text("10");//BC
+    let powmess = new txtp("10");//PIXI.Text
     powmess.position.set(app.view.width / 2 -120, 0);//BC
     app.stage.addChild(powmess,sliderv);//BC
 

@@ -1,4 +1,4 @@
-
+        
   /* Le slider */
   .slider {
     -webkit-appearance: none;  /* On écrase les styles css par défaut */
@@ -34,22 +34,6 @@
     cursor: pointer; /* Curseur */
   }
 
-  /* Style pour le modal pour les descriptions de chaque objet*/
-  .modal-container{
-      display: none;
-      justify-content: center;
-      background-color: #f9f2fb;
-  }
-  .modal {
-      background-color: #f9f2fb;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      padding: 30px 50px;
-      width: 100%;
-      max-width: 100%;
-      text-align: center;
-  }
-
   /*Import et mise en page de la police Poppins et mise en place de la couleur du body*/
   @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
   body{
@@ -59,17 +43,7 @@
   html {
     background-color: #f9f2fb;
   }
-  form{
-      display: none;
-      text-align: center;
-  }
   *{
       margin: 0;
       padding: 0;
-  }
-  #uploadvi{
-    display: none;
-  }
-  #uploadvlbl{
-      display: none;
   }
